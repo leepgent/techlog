@@ -1,17 +1,69 @@
+{% extends "global/root.html" %}
+
 {% load staticfiles %}
-<html>
-<head>
-<title>techlog.science</title>
-<link rel="stylesheet" href="{% static 'css/ionicons.css' %}" type="text/css" />
-<style type="text/css">
-h1 {text-align: center; font-size:9em;}
-h2 {text-align: center; font-family: monospace; }
-</style>
-</head>
-<body>
+
+{% block content %}
 <!--img src="{% static 'banner.jpg' %}" alt='banner' /-->
-<h1 class="icon ion-paper-airplane"></h1>
-<h2>tech log -- watch this space</h2>
-</body>
-</html>
+    <h2>Dashboard</h2>
+
+    {% for group in user.groups.all %}
+        <h3><span class="icon ion-person-stalker"></span>&nbsp;{{ group }}</h3>
+        <table class="datatable">
+        <thead>
+        <tr>
+            <th>Registration</th>
+            <th>Model</th>
+            <th>Last Check</th>
+            <th>Last Check Type</th>
+            <th>Next Check Type</th>
+            <th>Next Check In</th>
+            <th>Next Annual</th>
+            <th>ARC Expiry</th>
+            <th>Insurance Expiry</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for aeroplane in group.aeroplane_set.all %}
+            <tr>
+            <td>
+                <a href="{% url 'aeroplane' aeroplane.id %}"><span class="icon ion-plane"></span>&nbsp;{{ aeroplane.registration }}</a>
+            </td>
+            <td>
+                {{ aeroplane.model }}
+            </td>
+            <td>
+                {{ aeroplane.last_check }}
+            </td>
+            <td>
+                {{ aeroplane.get_last_check_type_display }}
+            </td>
+            <td>
+                {{ aeroplane.next_check_type }}
+            </td>
+                <td>
+                    {{ aeroplane.next_check_in_hours }}
+                </td>
+            <td>
+                {{ aeroplane.next_annual }}
+            </td>
+            <td>
+                {{ aeroplane.arc_expiry }}
+            </td>
+            <td>
+                {{ aeroplane.insurance_expiry }}
+            </td>
+            <td>
+                <a href="#" title="Add Flight..."> <span class="icon ion-plus-circled"></span></a>
+                <a href="#" title="View Tech Log..."> <span class="icon ion-folder"></span></a>
+            </td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+        </table>
+
+    {% endfor %}
+
+{% endblock %}
 
