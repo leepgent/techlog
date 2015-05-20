@@ -1,0 +1,55 @@
+{% extends "global/root.html" %}
+
+{% load staticfiles %}
+
+{% block content %}
+    <h2>Tech Log Entries</h2>
+
+    <table class="datatable">
+    <thead>
+    <tr>
+        <th>Aeroplane</th>
+        <th>Date</th>
+        <th>Commander</th>
+        <th>Check A Completed</th>
+        <th>Departure AD</th>
+        <th>Arrival AD</th>
+        <th>Departure Time</th>
+        <th>Arrival Time</th>
+        <th>Flight Duration</th>
+        <th>Airborne Time</th>
+        <th>Departure Tacho</th>
+        <th>Arrival Tacho</th>
+        <th>Tacho Time</th>
+        <th>Fuel Uplift</th>
+        <th>Oil Uplift</th>
+        <th>Defects</th>
+        </tr>
+    </thead>
+
+   <tbody>
+   {% for entry in object_list %}
+        <td>{{ entry.aeroplane }}</td>
+        <td>{{ entry.date }}</td>
+        <td>{{ entry.commander }}</td>
+        <td>{{ entry.check_a_completed }}</td>
+        <td>{{ entry.departure_location }}</td>
+        <td>{{ entry.arrival_location }}</td>
+
+        <td>{{ entry.departure_time }}</td>
+        <td>{{ entry.arrival_time }}</td>
+       <td><{{ entry.flight_duration }}/td>
+       <td>{{ entry.airborne_time }}</td>
+
+        <td>{{ entry.departure_tacho }}</td>
+        <td>{{ entry.arrival_tacho }}</td>
+       <td>{{ entry.engine_duration }}</td>
+        <td>{{ entry.fuel_uplift }}</td>
+        <td>{{ entry.oil_uplift }}</td>
+        <td>{{ entry.defects }}</td>
+
+   {% endfor %}
+    </tbody>
+    </table>
+
+{% endblock %}
