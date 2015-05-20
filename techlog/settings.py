@@ -108,3 +108,5 @@ STATIC_URL = '/static/'
 STATIC_ROOT = '/var/www/techlog/www/static'
 
 LOGIN_REDIRECT_URL = "/dashboard"
+LOGIN_URL = "/login"
+

@@ -3,7 +3,8 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>techlog.science</title>
+    <title>techlog.aero</title>
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}" />
     <link rel="stylesheet" href="{% static 'css/ionicons.css' %}" type="text/css" />
     <link rel="stylesheet" href="{% static 'css/techlog.css' %}" type="text/css" />
     {% block header %}
@@ -12,7 +13,7 @@
 <body>
 <header>
 
-    <a class="mainlogo" href="/"><span class="icon ion-paper-airplane"></span><span class="titletext">tech log</span></a>
+    <a class="mainlogo" href="/"><span class="icon ion-paper-airplane"></span><span class="titletext">techlog.aero</span></a>
 
     <nav>
         {% if user.is_anonymous %}
