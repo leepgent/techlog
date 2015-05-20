@@ -18,7 +18,7 @@
             <th>In</th>
             <th></th>
             <th>Next Check</th>
-            <th>Before</th>
+            <th>On</th>
 
             <th>ARC Expiry</th>
             <th>Insurance Expiry</th>
@@ -38,7 +38,7 @@
                 {{ aeroplane.next_check_pair.flying_hours_check.check_type }}
             </td>
             <td>
-                {{ aeroplane.next_check_pair.flying_hours_check.check_in_flying_hours }} hrs
+                {{ aeroplane.next_check_pair.flying_hours_check.check_in_flying_hours }} (@ {{ aeroplane.next_check_pair.flying_hours_check.check_at_total_flying_hours }}) hrs
             </td>
             <td>
                 or
