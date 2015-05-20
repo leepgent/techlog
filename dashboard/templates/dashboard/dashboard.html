@@ -13,11 +13,13 @@
         <tr>
             <th>Registration</th>
             <th>Model</th>
-            <th>Last Check</th>
-            <th>Last Check Type</th>
-            <th>Next Check Type</th>
-            <th>Next Check In</th>
-            <th>Next Annual</th>
+
+            <th>Next Check</th>
+            <th>In</th>
+            <th></th>
+            <th>Next Check</th>
+            <th>Before</th>
+
             <th>ARC Expiry</th>
             <th>Insurance Expiry</th>
 
@@ -33,19 +35,19 @@
                 {{ aeroplane.model }}
             </td>
             <td>
-                {{ aeroplane.last_check }}
+                {{ aeroplane.next_check_pair.flying_hours_check.check_type }}
             </td>
             <td>
-                {{ aeroplane.get_last_check_type_display }}
+                {{ aeroplane.next_check_pair.flying_hours_check.check_in_flying_hours }} hrs
             </td>
             <td>
-                {{ aeroplane.next_check_type }}
+                or
             </td>
-                <td>
-                    {{ aeroplane.next_check_in_hours }}
-                </td>
             <td>
-                {{ aeroplane.next_annual }}
+                {{ aeroplane.next_check_pair.calendar_check.check_type }}
+            </td>
+            <td>
+                {{ aeroplane.next_check_pair.calendar_check.check_before }}
             </td>
             <td>
                 {{ aeroplane.arc_expiry }}
