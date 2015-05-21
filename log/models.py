@@ -31,3 +31,18 @@ class TechLogEntry(models.Model):
     @property
     def airborne_time(self):
         return self.flight_duration - timezone.timedelta(minutes=10)
+
+    @property
+    def ttaf(self):
+        entries = self.aeroplane.techlogentry_set.filter(arrival_time__lte=self.arrival_time)
+        hours = reduce(lambda h, entry: h+entry.airborne_time, list(entries), timezone.timedelta(0))
+        hours_in_decimal = hours.total_seconds() / (60*60)
+        return self.aeroplane.opening_ttaf + hours_in_decimal
+
+    @property
+    def until_next_check(self):
+        since = self.aeroplane.last_check
+        entries = self.aeroplane.techlogentry_set.filter(date__gt=since).filter(arrival_time__lte=self.arrival_time)
+        hours = reduce(lambda h, entry: h+entry.airborne_time, list(entries), timezone.timedelta(0))  #  Can't use Django Aggregate/Sum because time isn't stored in DB
+        hours_in_decimal = hours.total_seconds() / (60*60)  # Like our stored DB 'hours' values, we need hours + decimal fraction of hours
+        return Aeroplane.MAX_HOURS_BETWEEN_CHECKS - self.aeroplane.opening_airframe_hours_after_last_check - hours_in_decimal

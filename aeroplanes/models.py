@@ -72,6 +72,8 @@ class Aeroplane(models.Model):
     opening_ttaf = models.FloatField()  # hours and hundredths of hours
     opening_tte = models.FloatField()  # hours and hundredths of hours
 
+    opening_airframe_hours_after_last_check = models.FloatField()  # hours and decimal fraction of hours
+
     arc_expiry = models.DateField()
     insurance_expiry = models.DateField()
 
@@ -80,13 +82,12 @@ class Aeroplane(models.Model):
 
     @property
     def flown_hours_since_check(self):
-        # TODO: Sum of tech log entries
+        #  Sum of tech log entries
         # TODO: remove circular dependency :-/
         entries = self.techlogentry_set.filter(date__gt=self.last_check)
         hours = reduce(lambda h, entry: h+entry.airborne_time, list(entries), timezone.timedelta(0))  #  Can't use Django Aggregate/Sum because time isn't stored in DB
-        foo = hours.total_seconds()
-        foo2 = foo / (60*60)
-        return foo2
+        hours_in_decimal = hours.total_seconds() / (60*60)  # Like our stored DB 'hours' values, we need hours + decimal fraction of hours
+        return self.opening_airframe_hours_after_last_check + hours_in_decimal
 
     @property
     def next_check_pair(self):

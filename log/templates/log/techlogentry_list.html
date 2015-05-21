@@ -24,11 +24,14 @@
         <th>Fuel Uplift</th>
         <th>Oil Uplift</th>
         <th>Defects</th>
+        <th>TTAF</th>
+        <th>Until next check</th>
         </tr>
     </thead>
 
    <tbody>
    {% for entry in object_list %}
+       <tr>
         <td>{{ entry.aeroplane }}</td>
         <td>{{ entry.date }}</td>
         <td>{{ entry.commander }}</td>
@@ -47,6 +50,10 @@
         <td>{{ entry.fuel_uplift }}</td>
         <td>{{ entry.oil_uplift }}</td>
         <td>{{ entry.defects }}</td>
+
+        <td>{{ entry.ttaf }}</td>
+        <td>{{ entry.until_next_check }}</td>
+       </tr>
    {% endfor %}
     </tbody>
     </table>
