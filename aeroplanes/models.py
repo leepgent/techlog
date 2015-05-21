@@ -69,7 +69,6 @@ class Aeroplane(models.Model):
     last_check_ttaf = models.FloatField()  # hours and hundredths of hours
     last_annual = models.DateField()
 
-    opening_ttaf = models.FloatField()  # hours and hundredths of hours
     opening_tte = models.FloatField()  # hours and hundredths of hours
 
     opening_airframe_hours_after_last_check = models.FloatField()  # hours and decimal fraction of hours

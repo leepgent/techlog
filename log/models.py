@@ -37,7 +37,7 @@ class TechLogEntry(models.Model):
         entries = self.aeroplane.techlogentry_set.filter(arrival_time__lte=self.arrival_time)
         hours = reduce(lambda h, entry: h+entry.airborne_time, list(entries), timezone.timedelta(0))
         hours_in_decimal = hours.total_seconds() / (60*60)
-        return self.aeroplane.opening_ttaf + hours_in_decimal
+        return self.aeroplane.last_check_ttaf + self.aeroplane.opening_airframe_hours_after_last_check + hours_in_decimal
 
     @property
     def until_next_check(self):
