@@ -1,5 +1,5 @@
 {% extends "global/root.html" %}
-
+{% load decimaltime %}
 {% load staticfiles %}
 
 {% block content %}
@@ -32,7 +32,7 @@
    <tbody>
    {% for entry in object_list %}
        <tr>
-        <td>{{ entry.aeroplane }}</td>
+        <td><a href="{% url 'aeroplane' entry.aeroplane.registration %}"><span class="icon ion-plane"></span>&nbsp;{{ entry.aeroplane }}</a></td>
         <td>{{ entry.date }}</td>
         <td>{{ entry.commander }}</td>
         <td>{{ entry.check_a_completed }}</td>
@@ -51,8 +51,8 @@
         <td>{{ entry.oil_uplift }}</td>
         <td>{{ entry.defects }}</td>
 
-        <td>{{ entry.ttaf }}</td>
-        <td>{{ entry.until_next_check }}</td>
+        <td>{{ entry.ttaf|humanise_longhours }}</td>
+        <td>{{ entry.until_next_check|humanise_longhours }}</td>
        </tr>
    {% endfor %}
     </tbody>

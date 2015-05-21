@@ -1,5 +1,5 @@
 {% extends "global/root.html" %}
-
+{% load decimaltime %}
 {% load staticfiles %}
 
 {% block content %}
@@ -39,7 +39,7 @@
                         {{ next_check_pair.flying_hours_check.check_type }}
                     </td>
                     <td>
-                        {{ next_check_pair.flying_hours_check.check_in_flying_hours }} (@ {{ next_check_pair.flying_hours_check.check_at_total_flying_hours }}) hrs
+                        {{ next_check_pair.flying_hours_check.check_in_flying_hours|humanise_longhours }} (@ {{ next_check_pair.flying_hours_check.check_at_total_flying_hours|humanise_longhours }}) hrs
                     </td>
                     <td>
                         or
