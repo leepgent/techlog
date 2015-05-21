@@ -7,15 +7,12 @@ a.mainlogo { font-size: 3em; }
 
 nav { float: right;}
 
-body {
+html {
+    background: url(../img/sky.jpg) no-repeat center center fixed;
     background-size: cover;
 
-    background: url("../img/sky.jpg") no-repeat center center fixed;
-
-    -webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-
+}
+body {
     font-family: monospace;
     padding-left: 3em;
     padding-right: 3em;
