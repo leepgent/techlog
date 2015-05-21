@@ -3,6 +3,8 @@ from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import Group
+from django.db.models import Sum
+from django.utils import timezone
 
 
 class CalendarCheck(object):
@@ -79,7 +81,12 @@ class Aeroplane(models.Model):
     @property
     def flown_hours_since_check(self):
         # TODO: Sum of tech log entries
-        return 44
+        # TODO: remove circular dependency :-/
+        entries = self.techlogentry_set.filter(date__gt=self.last_check)
+        hours = reduce(lambda h, entry: h+entry.airborne_time, list(entries), timezone.timedelta(0))  #  Can't use Django Aggregate/Sum because time isn't stored in DB
+        foo = hours.total_seconds()
+        foo2 = foo / (60*60)
+        return foo2
 
     @property
     def next_check_pair(self):

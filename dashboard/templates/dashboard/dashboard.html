@@ -29,26 +29,28 @@
         {% for aeroplane in group.aeroplane_set.all %}
             <tr>
             <td>
-                <a href="{% url 'aeroplane' aeroplane.id %}"><span class="icon ion-plane"></span>&nbsp;{{ aeroplane.registration }}</a>
+                <a href="{% url 'aeroplane' aeroplane.registration %}"><span class="icon ion-plane"></span>&nbsp;{{ aeroplane.registration }}</a>
             </td>
             <td>
                 {{ aeroplane.model }}
             </td>
-            <td>
-                {{ aeroplane.next_check_pair.flying_hours_check.check_type }}
-            </td>
-            <td>
-                {{ aeroplane.next_check_pair.flying_hours_check.check_in_flying_hours }} (@ {{ aeroplane.next_check_pair.flying_hours_check.check_at_total_flying_hours }}) hrs
-            </td>
-            <td>
-                or
-            </td>
-            <td>
-                {{ aeroplane.next_check_pair.calendar_check.check_type }}
-            </td>
-            <td>
-                {{ aeroplane.next_check_pair.calendar_check.check_before }}
-            </td>
+                {% with next_check_pair=aeroplane.next_check_pair %}
+                    <td>
+                        {{ next_check_pair.flying_hours_check.check_type }}
+                    </td>
+                    <td>
+                        {{ next_check_pair.flying_hours_check.check_in_flying_hours }} (@ {{ next_check_pair.flying_hours_check.check_at_total_flying_hours }}) hrs
+                    </td>
+                    <td>
+                        or
+                    </td>
+                    <td>
+                        {{ next_check_pair.calendar_check.check_type }}
+                    </td>
+                    <td>
+                        {{ next_check_pair.calendar_check.check_before }}
+                    </td>
+                {% endwith %}
             <td>
                 {{ aeroplane.arc_expiry }}
             </td>
@@ -57,7 +59,7 @@
             </td>
             <td>
                 <a href="#" title="Add Flight..."> <span class="icon ion-plus-circled"></span></a>
-                <a href="{% url 'techlogentrylist' %}" title="View Tech Log..."> <span class="icon ion-folder"></span></a>
+                <a href="{% url 'techlogentrylist' aeroplane.registration %}" title="View Tech Log..."> <span class="icon ion-folder"></span></a>
             </td>
             </tr>
 

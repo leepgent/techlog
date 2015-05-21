@@ -1,5 +1,5 @@
-from dateutil.relativedelta import relativedelta
 from django.db import models
+from django.utils import timezone
 from aeroplanes.models import Aeroplane
 
 
@@ -8,9 +8,9 @@ class TechLogEntry(models.Model):
     date = models.DateField()
     commander = models.TextField(max_length=100)
     departure_location = models.TextField(max_length=100)
-    arrival_location =  models.TextField(max_length=100)
-    departure_time = models.TimeField()
-    arrival_time = models.TimeField()
+    arrival_location = models.TextField(max_length=100)
+    departure_time = models.DateTimeField()
+    arrival_time = models.DateTimeField()
     departure_tacho = models.FloatField()
     arrival_tacho = models.FloatField()
     fuel_uplift = models.FloatField()
@@ -30,4 +30,4 @@ class TechLogEntry(models.Model):
 
     @property
     def airborne_time(self):
-        return self.flight_duration - relativedelta(minutes=-10)
+        return self.flight_duration - timezone.timedelta(minutes=10)
