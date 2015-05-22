@@ -12,7 +12,6 @@
     <table class="datatable">
     <thead>
     <tr>
-        <th>Aeroplane</th>
         <th>Date</th>
         <th>Commander</th>
         <th>Check A Completed</th>
@@ -32,20 +31,20 @@
         <th>Until next check</th>
         <th></th>
         </tr>
+
     </thead>
 
    <tbody>
    {% for entry in object_list %}
        <tr>
-        <td><span class="icon ion-plane"></span>&nbsp;<a href="{% url 'aeroplane' entry.aeroplane.registration %}">{{ entry.aeroplane }}</a></td>
-        <td><a href="{% url 'logentry' entry.aeroplane.registration entry.id %}">{{ entry.date }}</a></td>
+        <td><a href="{% url 'logentry' entry.aeroplane.registration entry.id %}">{{ entry.date|date:"SHORT_DATE_FORMAT" }}</a></td>
         <td>{{ entry.commander }}</td>
-        <td>{{ entry.check_a_completed }}</td>
+        <td style="text-align: center">{%  if entry.check_a_completed %}<span class="icon ion-checkmark-circled"></span>{% endif %}</td>
         <td>{{ entry.departure_location }}</td>
         <td>{{ entry.arrival_location }}</td>
 
-        <td>{{ entry.departure_time }}</td>
-        <td>{{ entry.arrival_time }}</td>
+        <td>{{ entry.departure_time|time:"H:i" }}</td>
+        <td>{{ entry.arrival_time|time:"H:i" }}</td>
         <td>{{ entry.flight_duration }}</td>
         <td>{{ entry.airborne_time }}</td>
 
