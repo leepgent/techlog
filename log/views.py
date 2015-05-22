@@ -1,12 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
-from django.views.generic import ListView
+from django.views.generic import ListView, DetailView
 from aeroplanes.models import Aeroplane
 from .models import TechLogEntry
 
-def logentry(request):
-    return None
+
+class LogEntryDetailView(DetailView):
+    model = TechLogEntry
 
 #  c.f. https://docs.djangoproject.com/en/1.8/topics/class-based-views/generic-display/
 class LogEntryList(ListView):

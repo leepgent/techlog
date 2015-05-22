@@ -28,8 +28,8 @@
         <tbody>
         {% for aeroplane in group.aeroplane_set.all %}
             <tr>
-            <td>
-                <a href="{% url 'aeroplane' aeroplane.registration %}"><span class="icon ion-plane"></span>&nbsp;{{ aeroplane.registration }}</a>
+            <td><span class="icon ion-plane"></span>&nbsp;
+                <a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane.registration }}</a>
             </td>
             <td>
                 {{ aeroplane.model }}

@@ -32,8 +32,8 @@
    <tbody>
    {% for entry in object_list %}
        <tr>
-        <td><a href="{% url 'aeroplane' entry.aeroplane.registration %}"><span class="icon ion-plane"></span>&nbsp;{{ entry.aeroplane }}</a></td>
-        <td>{{ entry.date }}</td>
+        <td><span class="icon ion-plane"></span>&nbsp;<a href="{% url 'aeroplane' entry.aeroplane.registration %}">{{ entry.aeroplane }}</a></td>
+        <td><a href="{% url 'logentry' entry.aeroplane.registration entry.id %}">{{ entry.date }}</a></td>
         <td>{{ entry.commander }}</td>
         <td>{{ entry.check_a_completed }}</td>
         <td>{{ entry.departure_location }}</td>

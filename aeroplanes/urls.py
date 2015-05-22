@@ -5,5 +5,5 @@ __author__ = 'Lee.Gent'
 
 urlpatterns = [
     url(r'^(?P<aeroplane_reg>[\w\d-]+)/$', views.aeroplane, name="aeroplane"),
-    url(r'^(?P<aeroplane_reg>[\w\d-]+)/techlog/$', include(techlog_urls)),
+    url(r'^(?P<aeroplane_reg>[\w\d-]+)/techlog/', include(techlog_urls)),
 ]

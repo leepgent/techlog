@@ -1,0 +1,9 @@
+{% extends "global/root.html" %}
+{% load decimaltime %}
+{% load staticfiles %}
+
+{% block content %}
+    <h2><a href="{% url 'techlogentrylist' object.aeroplane.registration %}">Tech Log</a> Entry for <a href="{% url 'aeroplane' object.aeroplane.registration %}">{{ object.aeroplane.registration }}</a> - Capt {{ object.commander }} - {{ object.departure_time }}</h2>
+    <h3>{{ object.departure_location }} to {{ object.arrival_location }}</h3>
+
+{% endblock %}

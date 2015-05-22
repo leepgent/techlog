@@ -2,6 +2,9 @@ a {
     text-decoration: none;
     color: black;
 }
+a:hover {
+    text-decoration: underline;
+}
 a.mainlogo { font-size: 3em; }
 .titletext {margin-left:0.5em; font-family: 'Courier New', monospace; font-weight: bold; text-shadow: 0 2px 3px darkgray;}
 
@@ -25,10 +28,14 @@ body {
 }
 
 .datatable {
-    width:100%;
+
+}
+
+.datatable thead th  {
+    padding: 0.4em;
 }
 .datatable tbody tr td {
-    padding: 0.2em;
+    padding: 0.4em;
 }
 .datatable tbody tr:hover {
     background-color: whitesmoke;

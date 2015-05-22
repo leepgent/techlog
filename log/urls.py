@@ -4,5 +4,5 @@ __author__ = 'Lee.Gent'
 
 urlpatterns = [
     url(r'^$', views.LogEntryList.as_view(), name='techlogentrylist'),
-    url(r'^(?P<logentry_id>\d+)$', views.logentry, name="logentry"),
+    url(r'^(?P<pk>\d+)/$', views.LogEntryDetailView.as_view(), name="logentry"),
 ]
