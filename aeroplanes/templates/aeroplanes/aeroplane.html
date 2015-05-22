@@ -2,11 +2,15 @@
 
 {% load staticfiles %}
 
+{% block nav %}
+    <a href="{% url 'aeroplane' aeroplane.registration %}"><strong>{{ aeroplane.registration }}</strong></a> | <a href="{% url 'techlogentrylist' aeroplane.registration %}">Tech Log</a> | <a href="{% url 'addflight' aeroplane.registration %}">Add Flight</a> |
+{% endblock %}
+
 {% block content %}
-    <h2>Aeroplane Details</h2>
+    <h2>Aeroplanes >> {{ aeroplane.registration }}</h2>
     <form>
     <table>
     {{ form }}
-        </table>
+    </table>
     </form>
 {% endblock %}

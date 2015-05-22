@@ -16,6 +16,8 @@
     <a class="mainlogo" href="/"><span class="icon ion-paper-airplane"></span><span class="titletext">techlog.aero</span></a>
 
     <nav>
+    {% block nav %}
+    {% endblock %}
         {% if user.is_anonymous %}
             <a href="{% url 'login' %}" ><span class="icon ion-log-in"></span></a>
         {% else %}

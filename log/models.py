@@ -1,9 +1,11 @@
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from aeroplanes.models import Aeroplane
 
 
 class TechLogEntry(models.Model):
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL)
     aeroplane = models.ForeignKey(Aeroplane)
     date = models.DateField()
     commander = models.TextField(max_length=100)

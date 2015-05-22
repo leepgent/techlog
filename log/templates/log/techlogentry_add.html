@@ -1,0 +1,19 @@
+{% extends "global/root.html" %}
+{% load decimaltime %}
+{% load staticfiles %}
+
+{% block nav %}
+    <a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane.registration }}</a> | <a href="{% url 'techlogentrylist' aeroplane.registration %}">Tech Log</a> | <a href="#"><strong>Add Flight</strong></a> |
+{% endblock %}
+
+{% block content %}
+    <h2>Aeroplanes >> <a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane.registration }}</a> >> Add Flight</h2>
+    <form method="post" action="{% url 'addflight' aeroplane.registration %}">
+    <table>
+        {% csrf_token %}
+        {{ form.as_table }}
+        <tr><td></td><td><input type="submit" value="Add Flight" /></td></tr>
+    </table>
+
+    </form>
+{% endblock %}

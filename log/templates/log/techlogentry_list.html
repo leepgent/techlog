@@ -2,8 +2,12 @@
 {% load decimaltime %}
 {% load staticfiles %}
 
+{% block nav %}
+    <a href="{% url 'aeroplane' view.aeroplane.registration %}">{{ view.aeroplane.registration }}</a> | <a href="{% url 'techlogentrylist' view.aeroplane.registration %}"><strong>Tech Log</strong></a> | <a href="{% url 'addflight' view.aeroplane.registration %}">Add Flight</a> |
+{% endblock %}
+
 {% block content %}
-    <h2>Tech Log Entries</h2>
+    <h2>Aeroplanes >> <a href="{% url 'aeroplane' view.aeroplane.registration %}">{{ view.aeroplane.registration }}</a> >> Tech Log</h2>
 
     <table class="datatable">
     <thead>
@@ -26,6 +30,7 @@
         <th>Defects</th>
         <th>TTAF</th>
         <th>Until next check</th>
+        <th></th>
         </tr>
     </thead>
 
@@ -53,6 +58,7 @@
 
         <td>{{ entry.ttaf|humanise_longhours }}</td>
         <td>{{ entry.until_next_check|humanise_longhours }}</td>
+       <td>{% if entry.owner.id == request.user.id %}<a href="{% url 'delete_logentry' entry.aeroplane.registration entry.id %}"><span class="icon ion-close-circled"></span></a>{% endif %}</td>
        </tr>
    {% endfor %}
     </tbody>
