@@ -12,6 +12,7 @@
 
     {% for group in user.groups.all %}
         <h3><span class="icon ion-person-stalker"></span>&nbsp;{{ group }}</h3>
+	<div class="table-responsive">
         <table class="table table-striped">
         <thead>
         <tr>
@@ -75,6 +76,7 @@
         {% endfor %}
         </tbody>
         </table>
+	</div>
 
     {% endfor %}
 
