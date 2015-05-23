@@ -14,7 +14,7 @@
     <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
     <li><a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane.registration }}</a></li>
     <li><a href="{% url 'techlogentrylist' aeroplane.registration %}">Tech Log</a></li>
-    <li class="active">Edit Flight on {{ entry.date }} - Capt {{ entry.commander }} ({{ entry.departure_location }} - {{ entry.arrival_location }})</li>
+    <li class="active">Edit Flight on {{ entry.departure_time|date:"SHORT_DATE_FORMAT" }} - Capt {{ entry.commander }} ({{ entry.departure_location }} - {{ entry.arrival_location }})</li>
 {% endblock %}
 
 {% block content %}
@@ -25,7 +25,7 @@
         {{ form.as_table }}
         <tr>
             <td></td>
-            <td><input type="submit" value="Save Flight" /></td>
+            <td><input type="submit" class="btn btn-default" value="Save Flight" /></td>
         </tr>
         </table>
         </form>

@@ -7,7 +7,6 @@ from aeroplanes.models import Aeroplane
 class TechLogEntry(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL)
     aeroplane = models.ForeignKey(Aeroplane)
-    date = models.DateField()
     commander = models.TextField(max_length=100)
     departure_location = models.TextField(max_length=100)
     arrival_location = models.TextField(max_length=100)
@@ -44,7 +43,7 @@ class TechLogEntry(models.Model):
     @property
     def until_next_check(self):
         since = self.aeroplane.last_check
-        entries = self.aeroplane.techlogentry_set.filter(date__gt=since).filter(arrival_time__lte=self.arrival_time)
+        entries = self.aeroplane.techlogentry_set.filter(departure_time__gt=since).filter(arrival_time__lte=self.arrival_time)
         hours = reduce(lambda h, entry: h+entry.airborne_time, list(entries), timezone.timedelta(0))  #  Can't use Django Aggregate/Sum because time isn't stored in DB
         hours_in_decimal = hours.total_seconds() / (60*60)  # Like our stored DB 'hours' values, we need hours + decimal fraction of hours
         return Aeroplane.MAX_HOURS_BETWEEN_CHECKS - self.aeroplane.opening_airframe_hours_after_last_check - hours_in_decimal

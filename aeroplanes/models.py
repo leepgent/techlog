@@ -83,7 +83,7 @@ class Aeroplane(models.Model):
     def flown_hours_since_check(self):
         #  Sum of tech log entries
         # TODO: remove circular dependency :-/
-        entries = self.techlogentry_set.filter(date__gt=self.last_check)
+        entries = self.techlogentry_set.filter(departure_time__gt=self.last_check)
         hours = reduce(lambda h, entry: h+entry.airborne_time, list(entries), timezone.timedelta(0))  #  Can't use Django Aggregate/Sum because time isn't stored in DB
         hours_in_decimal = hours.total_seconds() / (60*60)  # Like our stored DB 'hours' values, we need hours + decimal fraction of hours
         return self.opening_airframe_hours_after_last_check + hours_in_decimal

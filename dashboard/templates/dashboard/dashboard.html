@@ -8,7 +8,6 @@
 {% endblock %}
 
 {% block content %}
-<!--img src="{% static 'banner.jpg' %}" alt='banner' /-->
     <h2>Dashboard</h2>
 
     {% for group in user.groups.all %}
@@ -66,10 +65,10 @@
                 {{ aeroplane.insurance_expiry }}
             </td>
             <td>
-                <a class="btn btn-sm btn-default" href="{% url 'addflight' aeroplane.registration %}" title="Add Flight..."><span class="glyphicon glyphicon-plus"></span> Add Flight...</a>
+                <a class="btn btn-xs btn-default" href="{% url 'addflight' aeroplane.registration %}" title="Add Flight..."><span class="glyphicon glyphicon-plus"></span> Add Flight...</a>
             </td>
             <td>
-                <a class="btn btn-sm btn-default" href="{% url 'techlogentrylist' aeroplane.registration %}" title="View Tech Log..."><span class="glyphicon glyphicon-list"></span> View Tech Log...</a>
+                <a class="btn btn-xs btn-default" href="{% url 'techlogentrylist' aeroplane.registration %}" title="View Tech Log..."><span class="glyphicon glyphicon-list"></span> View Tech Log...</a>
             </td>
             </tr>
 

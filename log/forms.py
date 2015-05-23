@@ -8,7 +8,6 @@ from .models import TechLogEntry
 
 TechLogEntryForm = modelform_factory(TechLogEntry, fields=[
 
-            "date",
             "commander",
             "departure_location",
             "arrival_location",
@@ -30,7 +29,6 @@ TechLogEntryForm = modelform_factory(TechLogEntry, fields=[
     "departure_location": forms.TextInput(attrs={'class': 'form-control'}),
     "arrival_location": forms.TextInput(attrs={'class': 'form-control'}),
     "defects": forms.TextInput(attrs={'class': 'form-control'}),
-    "date": DateWidget(attrs={'id':"date_id"}, usel10n = True, bootstrap_version=3),
     "departure_time": DateTimeWidget(attrs={'id':'departure_time_id'}, usel10n=True, bootstrap_version=3),
     "arrival_time": DateTimeWidget(attrs={'id':'arrival_time_id'}, usel10n=True, bootstrap_version=3)
 
