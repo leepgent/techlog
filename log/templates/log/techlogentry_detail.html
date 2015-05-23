@@ -2,19 +2,19 @@
 {% load decimaltime %}
 {% load staticfiles %}
 
-{% block nav %}
-    <a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane.registration }}</a> | <a href="{% url 'techlogentrylist' aeroplane.registration %}">Tech Log</a> | <a href="{% url 'addflight' aeroplane.registration %}">Add Flight</a> |
-{% endblock %}
-
 {% block header %}
 {{ form.media }}
 {% endblock %}
 
 {% block breadcrumbs %}
+    <div class="container-fluid">
+    <ol class="breadcrumb">
     <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
     <li><a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane.registration }}</a></li>
     <li><a href="{% url 'techlogentrylist' aeroplane.registration %}">Tech Log</a></li>
     <li class="active">Edit Flight on {{ entry.departure_time|date:"SHORT_DATE_FORMAT" }} - Capt {{ entry.commander }} ({{ entry.departure_location }} - {{ entry.arrival_location }})</li>
+    </ol>
+    </div>
 {% endblock %}
 
 {% block content %}

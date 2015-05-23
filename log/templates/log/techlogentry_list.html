@@ -2,18 +2,18 @@
 {% load decimaltime %}
 {% load staticfiles %}
 
-{% block nav %}
-    <a href="{% url 'aeroplane' view.aeroplane.registration %}">{{ view.aeroplane.registration }}</a> | <a href="{% url 'techlogentrylist' view.aeroplane.registration %}"><strong>Tech Log</strong></a> | <a href="{% url 'addflight' view.aeroplane.registration %}">Add Flight</a> |
-{% endblock %}
-
 {% block breadcrumbs %}
+    <div class="container-fluid">
+    <ol class="breadcrumb">
     <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
     <li><a href="{% url 'aeroplane' view.aeroplane.registration %}">{{ view.aeroplane.registration }}</a></li>
     <li class="active">Tech Log</li>
+    </ol>
+    </div>
 {% endblock %}
 
 {% block content %}
-
+    <div class="container-fluid">
     <div class="table-responsive">
     <table class="table table-striped">
     <thead>
@@ -59,18 +59,19 @@
         <td>{{ entry.departure_tacho }}</td>
         <td>{{ entry.arrival_tacho }}</td>
         <td>{{ entry.engine_duration }}</td>
-        <td style="text-align: center">{%  if entry.check_a_completed %}<span class="icon ion-checkmark-circled"></span>{% endif %}</td>
+        <td style="text-align: center">{%  if entry.check_a_completed %}<span class="glyphicon glyphicon-check"></span>{% endif %}</td>
         <td>{{ entry.fuel_uplift }}</td>
         <td>{{ entry.oil_uplift }}</td>
         <td>{{ entry.defects }}</td>
 
         <td>{{ entry.ttaf|humanise_longhours }}</td>
         <td>{{ entry.until_next_check|humanise_longhours }}</td>
-       <td>{% if entry.owner.id == request.user.id %}<a href="{% url 'logentry' entry.aeroplane.registration entry.id %}"><span class="icon ion-edit"></span></a>{% endif %}</td>
-       <td>{% if entry.owner.id == request.user.id %}<a href="{% url 'delete_logentry' entry.aeroplane.registration entry.id %}"><span class="icon ion-close-circled"></span></a>{% endif %}</td>
+       <td>{% if entry.owner.id == request.user.id %}<a class="btn btn-default" href="{% url 'logentry' entry.aeroplane.registration entry.id %}"><span class="glyphicon glyphicon-edit"></span></a>{% endif %}</td>
+       <td>{% if entry.owner.id == request.user.id %}<a class="btn btn-default" href="{% url 'delete_logentry' entry.aeroplane.registration entry.id %}"><span class="glyphicon glyphicon-remove"></span></a>{% endif %}</td>
        </tr>
    {% endfor %}
     </tbody>
     </table>
+    </div>
     </div>
 {% endblock %}

@@ -2,19 +2,21 @@
 
 {% load staticfiles %}
 
-{% block nav %}
-    <a href="{% url 'aeroplane' aeroplane.registration %}"><strong>{{ aeroplane.registration }}</strong></a> | <a href="{% url 'techlogentrylist' aeroplane.registration %}">Tech Log</a> | <a href="{% url 'addflight' aeroplane.registration %}">Add Flight</a> |
-{% endblock %}
-
 {% block breadcrumbs %}
+    <div class="container-fluid">
+    <ol class="breadcrumb">
     <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
     <li class="active">{{ aeroplane.registration }}</li>
+    </ol>
+    </div>
 {% endblock %}
 
 {% block content %}
+    <div class="container">
     <form>
     <table class="table">
     {{ form }}
     </table>
     </form>
+    </div>
 {% endblock %}
