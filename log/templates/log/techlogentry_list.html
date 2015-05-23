@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-    <h2>Aeroplanes >> <a href="{% url 'aeroplane' view.aeroplane.registration %}">{{ view.aeroplane.registration }}</a> >> Tech Log</h2>
+    <h2>Aeroplanes >> <a href="{% url 'aeroplane' view.aeroplane.registration %}">{{ view.aeroplane.registration }}</a> >> <a href="{% url 'techlogentrylist' view.aeroplane.registration %}">Tech Log</a></h2>
 
     <table class="datatable">
     <thead>
@@ -30,6 +30,8 @@
         <th>TTAF</th>
         <th>Until next check</th>
         <th></th>
+        <th></th>
+
         </tr>
 
     </thead>
@@ -37,7 +39,7 @@
    <tbody>
    {% for entry in object_list %}
        <tr>
-        <td><a href="{% url 'logentry' entry.aeroplane.registration entry.id %}">{{ entry.date|date:"SHORT_DATE_FORMAT" }}</a></td>
+        <td>{{ entry.date|date:"SHORT_DATE_FORMAT" }}</td>
         <td>{{ entry.commander }}</td>
         <td style="text-align: center">{%  if entry.check_a_completed %}<span class="icon ion-checkmark-circled"></span>{% endif %}</td>
         <td>{{ entry.departure_location }}</td>
@@ -57,6 +59,7 @@
 
         <td>{{ entry.ttaf|humanise_longhours }}</td>
         <td>{{ entry.until_next_check|humanise_longhours }}</td>
+       <td>{% if entry.owner.id == request.user.id %}<a href="{% url 'logentry' entry.aeroplane.registration entry.id %}"><span class="icon ion-edit"></span></a>{% endif %}</td>
        <td>{% if entry.owner.id == request.user.id %}<a href="{% url 'delete_logentry' entry.aeroplane.registration entry.id %}"><span class="icon ion-close-circled"></span></a>{% endif %}</td>
        </tr>
    {% endfor %}

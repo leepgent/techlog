@@ -2,8 +2,19 @@
 {% load decimaltime %}
 {% load staticfiles %}
 
+{% block nav %}
+    <a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane.registration }}</a> | <a href="{% url 'techlogentrylist' aeroplane.registration %}">Tech Log</a> | <a href="{% url 'addflight' aeroplane.registration %}">Add Flight</a> |
+{% endblock %}
+
 {% block content %}
-    <h2><a href="{% url 'techlogentrylist' object.aeroplane.registration %}">Tech Log</a> Entry for <a href="{% url 'aeroplane' object.aeroplane.registration %}">{{ object.aeroplane.registration }}</a> - Capt {{ object.commander }} - {{ object.departure_time }}</h2>
-    <h3>{{ object.departure_location }} to {{ object.arrival_location }}</h3>
+    <h2>Aeroplanes >> <a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane.registration }}</a> >> <a href="{% url 'techlogentrylist' aeroplane.registration %}">Tech Log</a> >> <a href="{% url 'logentry' entry.aeroplane.registration entry.id %}">{{ entry.date }} - Capt {{ entry.commander }} ({{ entry.departure_location }} - {{ entry.arrival_location }})</a></h2>
+
+    <form method="post" action="{% url 'logentry' aeroplane.registration entry.id %}">
+    <table>
+        {% csrf_token %}
+        {{ form.as_table }}
+        <tr><td></td><td><input type="submit" value="Edit Flight" /></td></tr>
+    </table>
+    </form>
 
 {% endblock %}

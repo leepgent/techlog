@@ -11,14 +11,32 @@ from log.forms import TechLogEntryForm
 from .models import TechLogEntry
 
 
-class LogEntryDetailView(DetailView):
-    model = TechLogEntry
-
 #  c.f. https://docs.djangoproject.com/en/1.8/topics/class-based-views/generic-display/
 class LogEntryList(ListView):
     def get_queryset(self):
         self.aeroplane = get_object_or_404(Aeroplane, registration=self.kwargs["aeroplane_reg"])
         return TechLogEntry.objects.filter(aeroplane=self.aeroplane)
+
+
+@login_required
+def view_entry(request, aeroplane_reg, pk):
+    aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+    entry = get_object_or_404(TechLogEntry, pk=pk)
+
+    if request.method == 'GET':
+        form = TechLogEntryForm(instance=entry)
+
+    elif request.method == 'POST':
+        form = TechLogEntryForm(request.POST, instance=entry)
+        if form.is_valid():
+            entry = form.save(commit=False)
+            entry.aeroplane = aeroplane
+            entry.owner = request.user
+            entry.save()
+            return HttpResponseRedirect(reverse("techlogentrylist", args=[aeroplane.registration]))
+
+    return render(request, "log/techlogentry_detail.html", {"aeroplane": aeroplane, "form": form, "entry": entry})
+
 
 @login_required
 def add_flight(request, aeroplane_reg):

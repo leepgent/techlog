@@ -1,5 +1,6 @@
 {% extends "global/root.html" %}
 {% load decimaltime %}
+{% load checktype %}
 {% load staticfiles %}
 
 {% block content %}
@@ -23,6 +24,9 @@
             <th>ARC Expiry</th>
             <th>Insurance Expiry</th>
 
+            <th></th>
+            <th></th>
+
         </tr>
         </thead>
         <tbody>
@@ -36,7 +40,7 @@
             </td>
                 {% with next_check_pair=aeroplane.next_check_pair %}
                     <td>
-                        {{ next_check_pair.flying_hours_check.check_type }}
+                        {{ next_check_pair.flying_hours_check.check_type|humanise_checktype }}
                     </td>
                     <td>
                         {{ next_check_pair.flying_hours_check.check_in_flying_hours|humanise_longhours }} (@ {{ next_check_pair.flying_hours_check.check_at_total_flying_hours|humanise_longhours }}) hrs
@@ -45,7 +49,7 @@
                         or
                     </td>
                     <td>
-                        {{ next_check_pair.calendar_check.check_type }}
+                        {{ next_check_pair.calendar_check.check_type|humanise_checktype }}
                     </td>
                     <td>
                         {{ next_check_pair.calendar_check.check_before }}
@@ -58,8 +62,10 @@
                 {{ aeroplane.insurance_expiry }}
             </td>
             <td>
-                <a href="{% url 'addflight' aeroplane.registration %}" title="Add Flight..."> <span class="icon ion-plus-circled"></span></a>
-                <a href="{% url 'techlogentrylist' aeroplane.registration %}" title="View Tech Log..."> <span class="icon ion-folder"></span></a>
+                <a href="{% url 'addflight' aeroplane.registration %}" title="Add Flight...">Add Flight...</a>
+                </td>
+            <td>
+                <a href="{% url 'techlogentrylist' aeroplane.registration %}" title="View Tech Log...">View Tech Log...</a>
             </td>
             </tr>
 
