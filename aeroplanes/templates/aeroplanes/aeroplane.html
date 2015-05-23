@@ -28,7 +28,7 @@
                 </tr>
                 <tr>
                     <th>Owning Group</th>
-                    <td>{{ aeroplane.owning_group.name }}</td>
+                    <td><a href="{% url 'group' aeroplane.owning_group.id %}">{{ aeroplane.owning_group.name }}</a></td>
                 </tr>
                 <tr>
                     <th>Registered</th>

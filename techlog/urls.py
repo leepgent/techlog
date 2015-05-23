@@ -16,12 +16,16 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from dashboard import views
+from group import urls as group_urls
 from aeroplanes import urls as aeroplanes_urls
+from registration import urls as registration_urls
 
 urlpatterns = [
     url('^', include('django.contrib.auth.urls')),
     url(r'^$', views.dashboard, name='dashboard'),
+    url(r'^registration/', include(registration_urls)),
     url(r'^dashboard', views.dashboard),
+    url(r'^groups/', include(group_urls)),
     url(r'^aeroplanes/', include(aeroplanes_urls)),
     url(r'^admin/', include(admin.site.urls)),
 ]

@@ -1,0 +1,87 @@
+{% extends "global/root.html" %}
+
+{% load staticfiles %}
+
+{% block breadcrumbs %}
+    <div class="container-fluid">
+        <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
+            <li class="active">{{ profile.group.name }}</li>
+        </ol>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+
+    <div class="panel panel-default">
+  <div class="panel-heading">Secret key - give this to people to allow them to join the {{ profile.group.name }} group</div>
+  <div class="panel-body">
+
+      <p><a href="{% url 'joingroup' profile.secret_key %}" title="Join {{ profile.group.name }}">{{ request.META.HTTP_HOST }}{% url 'joingroup' profile.secret_key %}</a></p>
+
+    </div>
+    </div>
+
+    <div class="panel panel-default">
+  <div class="panel-heading">Group Aeroplanes</div>
+  <div class="panel-body">
+    <ul class="list-group">
+        {% for aeroplane in profile.group.aeroplane_set.all %}
+            <li class="list-group-item"><a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane }}</a></li>
+        {% endfor %}
+        </ul>
+  </div>
+</div>
+
+    <div class="panel panel-default">
+  <div class="panel-heading">Group Members</div>
+  <div class="panel-body">
+    <ul class="list-group">
+        {% for user in profile.group.user_set.all %}
+            <li class="list-group-item">{{ user.get_full_name }} ({{ user.get_username }})</li>
+        {% endfor %}
+        </ul>
+  </div>
+</div>
+
+    <div class="panel panel-default">
+  <div class="panel-heading">Techlog.aero Group Administrators</div>
+  <div class="panel-body">
+    <ul class="list-group">
+        {% for user in profile.administrators.all %}
+            <li class="list-group-item">{{ user.get_full_name }} ({{ user.get_username }})</li>
+        {% endfor %}
+        </ul>
+  </div>
+</div>
+
+     <div class="panel panel-default">
+  <div class="panel-heading">Group Roles</div>
+  <div class="panel-body">
+  <table class="table">
+      <thead>
+      <tr>
+          <th>Name</th>
+          <th>Role</th>
+          <th>Contact Details</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for role in profile.roles.all %}
+      <tr>
+          <td>{{ role.name }}</td>
+          <td>{{ role.role }}</td>
+          <td>{{ role.contact_info }}</td>
+      </tr>
+      {% endfor %}
+      </tbody>
+  </table>
+
+  </div>
+</div>
+
+
+
+    </div>
+{% endblock %}

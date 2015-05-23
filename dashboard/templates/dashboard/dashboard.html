@@ -15,7 +15,7 @@
     <div class="container-fluid">
 
     {% for group in user.groups.all %}
-        <h3><span class="icon ion-person-stalker"></span>&nbsp;{{ group }}</h3>
+        <h3><span class="icon ion-person-stalker"></span>&nbsp;<a href="{% url 'group' group.id %}">{{ group }}</a></h3>
 	<div class="table-responsive">
         <table class="table table-striped">
         <thead>
@@ -77,11 +77,14 @@
             </td>
             </tr>
 
+
         {% endfor %}
         </tbody>
         </table>
 	</div>
         </div>
+    {% empty %}
+            <p>You don't belong to any Aeroplane Groups. Get a member of a group to send you their secret key to join in!</p>
 
     {% endfor %}
 
