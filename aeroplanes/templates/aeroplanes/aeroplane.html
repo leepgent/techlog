@@ -4,19 +4,106 @@
 
 {% block breadcrumbs %}
     <div class="container-fluid">
-    <ol class="breadcrumb">
-    <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
-    <li class="active">{{ aeroplane.registration }}</li>
-    </ol>
+        <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
+            <li class="active">{{ aeroplane.registration }}</li>
+        </ol>
     </div>
 {% endblock %}
 
 {% block content %}
     <div class="container">
-    <form>
-    <table class="table">
-    {{ form }}
-    </table>
-    </form>
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Aeroplane Details</div>
+            <table class="table table-responsive">
+                <tr class="info">
+                    <td colspan="2">
+                        Registration
+                    </td>
+                </tr>
+                <tr>
+                    <th>Registration</th>
+                    <td>{{ aeroplane.registration }}</td>
+                </tr>
+                <tr>
+                    <th>Owning Group</th>
+                    <td>{{ aeroplane.owning_group.name }}</td>
+                </tr>
+                <tr>
+                    <th>Registered</th>
+                    <td>{{ aeroplane.registered }}</td>
+                </tr>
+
+                <tr class="info">
+                    <td colspan="2">
+                        Technical
+                    </td>
+                </tr>
+
+                <tr>
+                    <th>Manufacturer</th>
+                    <td>{{ aeroplane.manufacturer }}</td>
+                </tr>
+                <tr>
+                    <th>Type</th>
+                    <td>{{ aeroplane.type }}</td>
+                </tr>
+                <tr>
+                    <th>Model</th>
+                    <td>{{ aeroplane.model }}</td>
+                </tr>
+                <tr>
+                    <th>MTOW</th>
+                    <td>{{ aeroplane.mtow }} kg</td>
+                </tr>
+                <tr>
+                    <th>Engines</th>
+                    <td>{{ aeroplane.engine_count }}</td>
+                </tr>
+                <tr>
+                    <th>Engine</th>
+                    <td>{{ aeroplane.engine }}</td>
+                </tr>
+                <tr>
+                    <th>Propeller</th>
+                    <td>{{ aeroplane.propeller }}</td>
+                </tr>
+
+                <tr class="info">
+                    <td colspan="2">
+                        Maintenance
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <th>Last Check</th>
+                    <td>{{ aeroplane.last_check }}</td>
+
+                </tr>
+                <tr>
+                    <th>Last Check Type</th>
+                    <td>{{ aeroplane.get_last_check_type_display }}</td>
+                </tr>
+                <tr>
+                    <th>Last Check TTAF</th>
+                    <td>{{ aeroplane.last_check_ttaf }}</td>
+                </tr>
+                <tr>
+                    <th>Last Annual Check</th>
+                    <td>{{ aeroplane.last_annual }}</td>
+                </tr>
+                <tr>
+                    <th>ARC Expiry</th>
+                    <td>{{ aeroplane.arc_expiry }}</td>
+                </tr>
+                <tr>
+                    <th>Insurance Expiry</th>
+                    <td>{{ aeroplane.insurance_expiry }}</td>
+                </tr>
+            </table>
+        </div>
+
     </div>
 {% endblock %}
