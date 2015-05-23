@@ -3,13 +3,17 @@
 {% load checktype %}
 {% load staticfiles %}
 
+{% block breadcrumbs %}
+    <li class="active">Dashboard</li>
+{% endblock %}
+
 {% block content %}
 <!--img src="{% static 'banner.jpg' %}" alt='banner' /-->
     <h2>Dashboard</h2>
 
     {% for group in user.groups.all %}
         <h3><span class="icon ion-person-stalker"></span>&nbsp;{{ group }}</h3>
-        <table class="datatable">
+        <table class="table table-striped">
         <thead>
         <tr>
             <th>Registration</th>
@@ -32,7 +36,7 @@
         <tbody>
         {% for aeroplane in group.aeroplane_set.all %}
             <tr>
-            <td><span class="icon ion-plane"></span>&nbsp;
+            <td>
                 <a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane.registration }}</a>
             </td>
             <td>
@@ -62,10 +66,10 @@
                 {{ aeroplane.insurance_expiry }}
             </td>
             <td>
-                <a href="{% url 'addflight' aeroplane.registration %}" title="Add Flight...">Add Flight...</a>
-                </td>
+                <a class="btn btn-sm btn-default" href="{% url 'addflight' aeroplane.registration %}" title="Add Flight..."><span class="glyphicon glyphicon-plus"></span> Add Flight...</a>
+            </td>
             <td>
-                <a href="{% url 'techlogentrylist' aeroplane.registration %}" title="View Tech Log...">View Tech Log...</a>
+                <a class="btn btn-sm btn-default" href="{% url 'techlogentrylist' aeroplane.registration %}" title="View Tech Log..."><span class="glyphicon glyphicon-list"></span> View Tech Log...</a>
             </td>
             </tr>
 

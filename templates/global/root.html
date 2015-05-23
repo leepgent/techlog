@@ -2,11 +2,19 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>techlog.aero</title>
     <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}" />
     <link rel="stylesheet" href="{% static 'css/ionicons.css' %}" type="text/css" />
-    <link rel="stylesheet" href="{% static 'css/techlog.css' %}" type="text/css" />
+
+    <script src="{% static 'js/jquery-2.1.4.min.js' %}"></script>
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css"/>
+    <script src="{% static 'js/bootstrap.js' %}"></script>
+
+   <link rel="stylesheet" href="{% static 'css/techlog.css' %}" type="text/css" />
+
     {% block header %}
     {% endblock %}
 </head>
@@ -25,7 +33,14 @@
         {% endif %}
     </nav>
 
+
+
+<ol class="breadcrumb">
+{% block breadcrumbs %}
+{% endblock %}
+</ol>
 </header>
+
 {% block content %}
 {% endblock %}
 </body>

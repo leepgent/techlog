@@ -2,18 +2,34 @@
 {% load decimaltime %}
 {% load staticfiles %}
 
+{% block header %}
+{{ form.media }}
+{% endblock %}
+
 {% block nav %}
     <a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane.registration }}</a> | <a href="{% url 'techlogentrylist' aeroplane.registration %}">Tech Log</a> | <a href="#"><strong>Add Flight</strong></a> |
 {% endblock %}
 
+{% block breadcrumbs %}
+    <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
+    <li><a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane.registration }}</a></li>
+    <li><a href="{% url 'techlogentrylist' aeroplane.registration %}">Tech Log</a></li>
+    <li class="active">Add Flight</li>
+{% endblock %}
+
 {% block content %}
     <h2>Aeroplanes >> <a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane.registration }}</a> >> Add Flight</h2>
-    <form method="post" action="{% url 'addflight' aeroplane.registration %}">
-    <table>
-        {% csrf_token %}
-        {{ form.as_table }}
-        <tr><td></td><td><input type="submit" value="Add Flight" /></td></tr>
-    </table>
 
-    </form>
+
+    <div class="container">
+        <form method="post" action="{% url 'addflight' aeroplane.registration %}">
+            <table class="table">
+                {% csrf_token %}
+                {{ form.as_table }}
+                <tr><td></td><td><input type="submit" value="Add Flight" /></td></tr>
+            </table>
+        </form>
+    </div>
+
+
 {% endblock %}

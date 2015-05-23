@@ -6,10 +6,16 @@
     <a href="{% url 'aeroplane' view.aeroplane.registration %}">{{ view.aeroplane.registration }}</a> | <a href="{% url 'techlogentrylist' view.aeroplane.registration %}"><strong>Tech Log</strong></a> | <a href="{% url 'addflight' view.aeroplane.registration %}">Add Flight</a> |
 {% endblock %}
 
-{% block content %}
-    <h2>Aeroplanes >> <a href="{% url 'aeroplane' view.aeroplane.registration %}">{{ view.aeroplane.registration }}</a> >> <a href="{% url 'techlogentrylist' view.aeroplane.registration %}">Tech Log</a></h2>
+{% block breadcrumbs %}
+    <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
+    <li><a href="{% url 'aeroplane' view.aeroplane.registration %}">{{ view.aeroplane.registration }}</a></li>
+    <li class="active">Tech Log</li>
+{% endblock %}
 
-    <table class="datatable">
+{% block content %}
+
+    <div class="table-responsive">
+    <table class="table table-striped">
     <thead>
     <tr>
         <th>Date</th>
@@ -65,5 +71,5 @@
    {% endfor %}
     </tbody>
     </table>
-
+    </div>
 {% endblock %}

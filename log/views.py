@@ -43,10 +43,11 @@ def add_flight(request, aeroplane_reg):
     aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
     if request.method == "GET":
         last_entry = aeroplane.techlogentry_set.last()
+        now = timezone.now().replace(second=0)
         form = TechLogEntryForm(initial={
             "date": timezone.now().date(),
-            "departure_time": timezone.now(),
-            "arrival_time": timezone.now(),
+            "departure_time": now,
+            "arrival_time": now,
             "commander": request.user.last_name,
             "fuel_uplift": 0,
             "oil_uplift": 0,
