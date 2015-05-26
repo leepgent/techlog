@@ -21,7 +21,7 @@ def log_entries(request, aeroplane_reg, year=None, month=None):
     d = timezone.datetime(year=year, month=month, day=1)
 
     aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
-    log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month)
+    log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('departure_time')
     return render(request, "log/techlogentry_list.html", {"aeroplane": aeroplane, "date": d, "logentries": log_entry_list})
 
 
