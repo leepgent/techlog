@@ -39,9 +39,11 @@
         <th>Arrival Tacho</th>
         <th>Tacho Time</th>
         <th>Check A</th>
+        <th>Defects</th>
         <th>Fuel Uplift</th>
         <th>Oil Uplift</th>
-        <th>Defects</th>
+        <th>Cost</th>
+
         <!--th>TTAF</th-->
         <th>Until next check</th>
         <th></th>
@@ -69,9 +71,11 @@
         <td>{{ entry.arrival_tacho|stringformat:".02f" }}</td>
         <td>{{ entry.engine_duration|stringformat:".02f" }}</td>
         <td style="text-align: center">{%  if entry.check_a_completed %}<span class="glyphicon glyphicon-check"></span>{% endif %}</td>
+        <td>{{ entry.defects }}</td>
+
         <td>{{ entry.fuel_uplift }}</td>
         <td>{{ entry.oil_uplift }}</td>
-        <td>{{ entry.defects }}</td>
+       <td>{{ entry.cost }}</td>
 
         <!--td>{{ entry.ttaf|humanise_longhours }}</td-->
         <td>{{ entry.until_next_check|humanise_longhours }}</td>

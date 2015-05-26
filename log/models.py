@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from aeroplanes.models import Aeroplane
+from group.models import GroupMemberProfile
 
 
 class TechLogEntry(models.Model):
@@ -47,3 +48,18 @@ class TechLogEntry(models.Model):
         hours = reduce(lambda h, entry: h+entry.airborne_time, list(entries), timezone.timedelta(0))  #  Can't use Django Aggregate/Sum because time isn't stored in DB
         hours_in_decimal = hours.total_seconds() / (60*60)  # Like our stored DB 'hours' values, we need hours + decimal fraction of hours
         return Aeroplane.MAX_HOURS_BETWEEN_CHECKS - self.aeroplane.opening_airframe_hours_after_last_check - hours_in_decimal
+
+    @property
+    def cost(self):
+        group = self.aeroplane.owning_group
+        group_profile = group.groupprofile
+        user = self.owner
+        memberprofile = GroupMemberProfile.objects.get(group=group_profile, member=user)
+        rate = memberprofile.cost_per_hour
+
+        if memberprofile.charge_regime == GroupMemberProfile.CHARGE_REGIME_TACHO_HOURS:
+            cost = self.engine_duration * rate
+        else:
+            cost = 0
+
+        return cost
