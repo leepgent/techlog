@@ -16,3 +16,7 @@ body {
 
     min-height: 100%;
 }
+th {
+ text-align: center;
+}
+

@@ -17,7 +17,7 @@
     {% for group in user.groups.all %}
         <h3><span class="icon ion-person-stalker"></span>&nbsp;<a href="{% url 'group' group.id %}">{{ group }}</a></h3>
 	<div class="table-responsive">
-        <table class="table table-striped">
+        <table class="table table-condensed table-bordered table-hover">
         <thead>
         <tr>
             <th>Registration</th>
@@ -50,8 +50,14 @@
                     <td>
                         {{ next_check_pair.flying_hours_check.check_type|humanise_checktype }}
                     </td>
+                    {% if next_check_pair.flying_hours_check.check_in_flying_hours < 5  %}
+                    <td class="danger">
+                    {% elif next_check_pair.flying_hours_check.check_in_flying_hours < 10  %}
+                    <td class="danger">
+                    {% else %}
                     <td>
-                        {{ next_check_pair.flying_hours_check.check_in_flying_hours|humanise_longhours }} (@ {{ next_check_pair.flying_hours_check.check_at_total_flying_hours|humanise_longhours }}) hrs
+                    {% endif %}
+                        {{ next_check_pair.flying_hours_check.check_in_flying_hours|humanise_longhours }} (@ {{ next_check_pair.flying_hours_check.check_at_total_flying_hours|humanise_longhours }}) AF hrs
                     </td>
                     <td>
                         or
@@ -70,10 +76,10 @@
                 {{ aeroplane.insurance_expiry }}
             </td>
             <td>
-                <a class="btn btn-default" href="{% url 'addflight' aeroplane.registration %}" title="Add Flight..."><span class="glyphicon glyphicon-plus"></span></a>
+                <a class="btn btn-default btn-sm" href="{% url 'addflight' aeroplane.registration %}" title="Add Flight..."><span class="glyphicon glyphicon-plus"></span></a>
             </td>
             <td>
-                <a class="btn btn-default" href="{% url 'techlogentrylist' aeroplane.registration %}" title="View Tech Log..."><span class="glyphicon glyphicon-list"></span></a>
+                <a class="btn btn-default btn-sm" href="{% url 'techlogentrylist' aeroplane.registration %}" title="View Tech Log..."><span class="glyphicon glyphicon-list"></span></a>
             </td>
             </tr>
 

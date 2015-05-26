@@ -5,17 +5,24 @@ from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.utils import timezone
-from django.views.generic import ListView, DetailView
 from aeroplanes.models import Aeroplane
 from log.forms import TechLogEntryForm
 from .models import TechLogEntry
 
 
-#  c.f. https://docs.djangoproject.com/en/1.8/topics/class-based-views/generic-display/
-class LogEntryList(ListView):
-    def get_queryset(self):
-        self.aeroplane = get_object_or_404(Aeroplane, registration=self.kwargs["aeroplane_reg"])
-        return TechLogEntry.objects.filter(aeroplane=self.aeroplane)
+@login_required
+def log_entries(request, aeroplane_reg, year=None, month=None):
+    now = timezone.now()
+    if month is None:
+        month = now.month
+    if year is None:
+        year = now.year
+
+    d = timezone.datetime(year=year, month=month, day=1)
+
+    aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+    log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month)
+    return render(request, "log/techlogentry_list.html", {"aeroplane": aeroplane, "date": d, "logentries": log_entry_list})
 
 
 @login_required
