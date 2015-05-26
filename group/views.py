@@ -22,3 +22,7 @@ def joingroup(request, secret):
         return HttpResponseRedirect(reverse('dashboard'))
 
     return render(request, "group/group_join.html", {"profile": groupprofile})
+
+
+def creategroup(request):
+    return render(request, "group/group_create.html")
