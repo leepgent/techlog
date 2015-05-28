@@ -42,7 +42,7 @@
         <th>Fuel Uplift</th>
         <th>Oil Uplift</th>
         <th>Defects</th>
-        <!--th>TTAF</th-->
+        <th>TTAF</th>
         <th>Until next check</th>
         <th></th>
         <th></th>
@@ -73,7 +73,7 @@
         <td>{{ entry.oil_uplift }}</td>
         <td>{{ entry.defects }}</td>
 
-        <!--td>{{ entry.ttaf|humanise_longhours }}</td-->
+        <td>{{ entry.ttaf|humanise_longhours }}</td>
         <td>{{ entry.until_next_check|humanise_longhours }}</td>
        <td><a class="btn btn-default btn-sm" href="{% url 'logentry' entry.aeroplane.registration entry.id %}"><span class="glyphicon glyphicon-edit"></span></a></td>
        <td><a class="btn btn-default btn-sm" href="{% url 'delete_logentry' entry.aeroplane.registration entry.id %}"><span class="glyphicon glyphicon-remove"></span></a></td>

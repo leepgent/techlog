@@ -64,14 +64,14 @@ class Aeroplane(models.Model):
     engine = models.CharField(max_length=100)
     propeller = models.CharField(max_length=100)
 
-    last_check = models.DateField()
-    last_check_type = models.CharField(choices=CHECK_TYPE_CHOICES, max_length=20)
-    last_check_ttaf = models.FloatField()  # hours and hundredths of hours
-    last_annual = models.DateField()
+    #last_check = models.DateField()
+    #last_check_type = models.CharField(choices=CHECK_TYPE_CHOICES, max_length=20)
+    #last_check_ttaf = models.FloatField()  # hours and hundredths of hours
+    last_annual = models.DateTimeField()
 
     opening_tte = models.FloatField()  # hours and hundredths of hours
 
-    opening_airframe_hours_after_last_check = models.FloatField()  # hours and decimal fraction of hours
+    #opening_airframe_hours_after_last_check = models.FloatField()  # hours and decimal fraction of hours
 
     arc_expiry = models.DateField()
     insurance_expiry = models.DateField()
@@ -80,17 +80,35 @@ class Aeroplane(models.Model):
         return "{0} ({1})".format(self.registration, self.model)
 
     @property
+    def last_check(self):
+        since = self.check_set.order_by("time").last()
+        return since.time
+
+    @property
+    def last_check_type(self):
+        since = self.check_set.order_by("time").last()
+        return since.type
+
+    @property
+    def last_check_ttaf(self):
+        since = self.check_set.order_by("time").last()
+        return since.ttaf
+
+    @property
     def flown_hours_since_check(self):
         #  Sum of tech log entries
         # TODO: remove circular dependency :-/
-        entries = self.techlogentry_set.filter(departure_time__gt=self.last_check)
+        last_check = self.check_set.order_by("time").last()
+
+        entries = self.techlogentry_set.filter(departure_time__gt=last_check.time)
         hours = reduce(lambda h, entry: h+entry.airborne_time, list(entries), timezone.timedelta(0))  #  Can't use Django Aggregate/Sum because time isn't stored in DB
         hours_in_decimal = hours.total_seconds() / (60*60)  # Like our stored DB 'hours' values, we need hours + decimal fraction of hours
-        return self.opening_airframe_hours_after_last_check + hours_in_decimal
+        return last_check.opening_hours_after_this_check + hours_in_decimal
 
     @property
     def next_check_pair(self):
-        return self.calc_next_check_pair(self.last_check, self.last_annual, self.last_check_type, self.last_check_ttaf, self.flown_hours_since_check)
+        check_pair = self.calc_next_check_pair(self.last_check, self.last_annual, self.last_check_type, self.last_check_ttaf, self.flown_hours_since_check)
+        return check_pair
 
     @classmethod
     def calc_next_flying_hours_check(cls, last_check_type, last_check_ttaf, flown_hours):

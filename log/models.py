@@ -3,6 +3,12 @@ from django.db import models
 from django.utils import timezone
 from aeroplanes.models import Aeroplane
 
+class Check(models.Model):
+    aeroplane = models.ForeignKey(Aeroplane)
+    time = models.DateTimeField()
+    type = models.CharField(max_length=10, choices=Aeroplane.CHECK_TYPE_CHOICES)
+    ttaf = models.FloatField()
+    opening_hours_after_this_check = models.FloatField(default=0)
 
 class TechLogEntry(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL)
@@ -35,15 +41,19 @@ class TechLogEntry(models.Model):
 
     @property
     def ttaf(self):
-        entries = self.aeroplane.techlogentry_set.filter(arrival_time__lte=self.arrival_time)
+        since = self.aeroplane.check_set.filter(time__lte=self.departure_time).order_by("time").last()
+        entries = self.aeroplane.techlogentry_set.filter(arrival_time__gte=since.time, arrival_time__lte=self.arrival_time)
         hours = reduce(lambda h, entry: h+entry.airborne_time, list(entries), timezone.timedelta(0))
         hours_in_decimal = hours.total_seconds() / (60*60)
-        return self.aeroplane.last_check_ttaf + self.aeroplane.opening_airframe_hours_after_last_check + hours_in_decimal
+        return since.ttaf + since.opening_hours_after_this_check + hours_in_decimal
 
     @property
     def until_next_check(self):
-        since = self.aeroplane.last_check
-        entries = self.aeroplane.techlogentry_set.filter(departure_time__gt=since).filter(arrival_time__lte=self.arrival_time)
+        #since = self.aeroplane.last_check
+
+        since = self.aeroplane.check_set.filter(time__lte=self.departure_time).order_by("time").last()
+
+        entries = self.aeroplane.techlogentry_set.filter(departure_time__gt=since.time).filter(arrival_time__lte=self.arrival_time)
         hours = reduce(lambda h, entry: h+entry.airborne_time, list(entries), timezone.timedelta(0))  #  Can't use Django Aggregate/Sum because time isn't stored in DB
         hours_in_decimal = hours.total_seconds() / (60*60)  # Like our stored DB 'hours' values, we need hours + decimal fraction of hours
-        return Aeroplane.MAX_HOURS_BETWEEN_CHECKS - self.aeroplane.opening_airframe_hours_after_last_check - hours_in_decimal
+        return Aeroplane.MAX_HOURS_BETWEEN_CHECKS - since.opening_hours_after_this_check - hours_in_decimal
