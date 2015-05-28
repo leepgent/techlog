@@ -18,7 +18,7 @@ class GroupProfile(models.Model):
     group = models.OneToOneField(Group)
     #administrators = models.ManyToManyField(settings.AUTH_USER_MODEL)
     roles = models.ManyToManyField(GroupRole, blank=True)
-    fuel_rebate_price_per_litre = models.FloatField()
+    current_fuel_rebate_price_per_litre = models.FloatField()
     secret_key = models.UUIDField(default=uuid.uuid4)
 
 class GroupMemberProfile(models.Model):

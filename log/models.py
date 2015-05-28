@@ -20,6 +20,8 @@ class TechLogEntry(models.Model):
     defects = models.TextField(max_length=200)
     check_a_completed = models.BooleanField()
 
+    fuel_rebate_price_per_litre = models.FloatField()
+
     # engine duration, flight duration and airborne times dynamically calculated
 
     @property
