@@ -80,3 +80,17 @@ def delete_logentry(request, aeroplane_reg, pk):
         return HttpResponseForbidden()
     entry.delete()
     return HttpResponseRedirect(reverse("techlogentrylist", args=[aeroplane_reg]))
+
+
+def month_summary(request, aeroplane_reg, year=None, month=None):
+    now = timezone.now()
+    if month is None:
+        month = now.month
+    if year is None:
+        year = now.year
+
+    d = timezone.datetime(year=year, month=month, day=1)
+
+    aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+    log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('departure_time')
+    return render(request, "log/techlogentry_month_summary.html", {"aeroplane": aeroplane, "date": d, "logentries": log_entry_list})
