@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.db.models import F, Value, Sum, Count, Q
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404
 
@@ -15,8 +16,12 @@ def log_entries(request, aeroplane_reg, year=None, month=None):
     now = timezone.now()
     if month is None:
         month = now.month
+    else:
+        month = int(month)
     if year is None:
         year = now.year
+    else:
+        year = int(year)
 
     d = timezone.datetime(year=year, month=month, day=1)
 
@@ -86,11 +91,71 @@ def month_summary(request, aeroplane_reg, year=None, month=None):
     now = timezone.now()
     if month is None:
         month = now.month
+    else:
+        month = int(month)
     if year is None:
         year = now.year
+    else:
+        year = int(year)
 
     d = timezone.datetime(year=year, month=month, day=1)
 
     aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+
+    this_months_commanders = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('commander').distinct('commander').values_list('commander')
+    commander_list = dict()
+    for commander_ in this_months_commanders:
+        commander = commander_[0]
+        flights = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month, commander=commander).order_by('departure_time')
+        commander_list[commander] = flights
+        #commander_list.append(flights)
+    #log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('commander')
+    return render(request, "log/techlogentry_month_summary.html", {"aeroplane": aeroplane, "date": d, "logentries": commander_list})
+
+SECS_IN_HOUR=60*60
+def decimalise_time(timedelta):
+    seconds = timedelta.total_seconds()
+    return seconds / SECS_IN_HOUR
+
+def cap398(request, aeroplane_reg, year=None, month=None):
+    now = timezone.now()
+    if month is None:
+        month = now.month
+    else:
+        month = int(month)
+    if year is None:
+        year = now.year
+    else:
+        year = int(year)
+
+    d = timezone.datetime(year=year, month=month, day=1)
+    last_month_delta = timezone.timedelta(days=1)
+    last_month = d - last_month_delta
+
+    aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+
+    # Get the last log entry for last month to find the base TTAF:
+    #last_month = month-1
+    #last_month_year = year
+    #if last_month < 1:
+    #    last_month = 12
+    #    last_month_year = last_month_year - 1
+    last_of_last_month = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=last_month.year, departure_time__month=last_month.month).order_by('departure_time').last()
+    if last_of_last_month is None:
+        last_ttaf = aeroplane.opening_time
+    else:
+        last_ttaf = last_of_last_month.ttaf
+
     log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('departure_time')
-    return render(request, "log/techlogentry_month_summary.html", {"aeroplane": aeroplane, "date": d, "logentries": log_entry_list})
+    day_list = log_entry_list.datetimes('departure_time', 'day')
+    #margin = timezone.timedelta(minutes=10)
+    stat_list = list()
+    #last_ttaf = 2660.25
+    for day in day_list:
+        day_stats = log_entry_list.filter(departure_time__day=day.day).annotate(db_block_time=(F('arrival_time') - F('departure_time'))).annotate(db_airborne_time=F('db_block_time')-Value("PT10M")).aggregate(total_airborne=Sum('db_airborne_time'), flight_count=Count("*"))
+        day_stats["day"] = day
+        day_stats["ttaf"] = last_ttaf + decimalise_time(day_stats["total_airborne"])
+        last_ttaf = day_stats["ttaf"]
+        stat_list.append(day_stats)
+
+    return render(request, "log/techlogentry_cap398.html", {"aeroplane": aeroplane, "date": d, "stat_list": stat_list})

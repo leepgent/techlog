@@ -12,8 +12,9 @@
             <li>
                 <a href="{% url "techlogentrylist_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}">{{ date|date:"F" }}</a>
             </li>
-            <li class="active">Summary</li>
-            <li><a href="{% url "cap398_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}">CAP 398 View</a></li>
+            <li><a href="{% url "log_month_summary" aeroplane.registration date|date:"Y" date|date:"n" %}">Summary</a>
+            </li>
+            <li class="active">CAP 398 View</li>
         </ol>
     </div>
 {% endblock %}
@@ -21,11 +22,9 @@
 {% block content %}
     <div class="container">
 
-        {% for commander, flights in logentries.items %}
-
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">{{ commander }}</h3>
+                    <h3 class="panel-title">foo</h3>
                 </div>
                 <div class="panel-body">
                     <div class="table-responsive">
@@ -33,38 +32,25 @@
                             <thead>
                             <tr>
                                 <th>Date</th>
-<th>From</th>
-<th>To</th>
-
-                                <th>Tacho Time (hh.%hh)</th>
-
-                                <th>Fuel Uplift (L)</th>
-                                <th>Oil Uplift (L)</th>
-
+                                <th>Flights</th>
+                                <th>Airborne Time</th>
+                                <th>TTAF</th>
                             </tr>
                             </thead>
-
                             <tbody>
-                            {% for entry in flights %}
+                            {% for entry in stat_list %}
                                 <tr>
-                                    <td>{{ entry.departure_time|date:"SHORT_DATE_FORMAT" }}</td>
-<td>{{ entry.departure_location }}</td>
-<td>{{ entry.arrival_location }}</td>
-
-                                    <td>{{ entry.engine_duration|stringformat:".02f" }}</td>
-
-                                    <td>{{ entry.fuel_uplift }}</td>
-                                    <td>{{ entry.oil_uplift }}</td>
-
+                                    <td>{{ entry.day|date:"SHORT_DATE_FORMAT" }}</td>
+                                    <td>{{ entry.flight_count }}</td>
+                                    <td>{{ entry.total_airborne }}</td>
+                                    <td>{{ entry.ttaf|humanise_longhours }}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>
                         </table>
                     </div>
-
                 </div>
-
             </div>
-        {% endfor %}
+
     </div>
 {% endblock %}

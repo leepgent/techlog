@@ -5,6 +5,11 @@ __author__ = 'lee.gent'
 
 register = template.Library()
 
+def decimalise_time(timedelta):
+    hours = timedelta.hours
+    minutes = timedelta.minutes
+    hour_frac = minutes / 60.0
+    return hours + hour_frac
 
 @register.filter
 def humanise(decimal_hours):
@@ -23,5 +28,8 @@ def humanise_longhours(decimal_hours):
     parts_of_hour = decimal_hours - hours
     minutes = 60 * parts_of_hour
     minutes = int(round(minutes, 2))
+    if minutes == 60:
+        hours = hours + 1
+        minutes = 0
 
-    return "{0}{1}.{2:02}".format("-" if neg else "", hours, minutes)
+    return "{0}{1}:{2:02}".format("-" if neg else "", hours, minutes)

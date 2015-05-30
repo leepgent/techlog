@@ -3,7 +3,7 @@ from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import Group
-from django.db.models import Sum
+from django.db.models import Sum, F, Value
 from django.utils import timezone
 
 
@@ -24,6 +24,12 @@ class CheckPair(object):
     def __init__(self, flying_hours_check, calendar_check):
         self.flying_hours_check = flying_hours_check
         self.calendar_check = calendar_check
+
+
+SECS_IN_HOUR=60*60
+def decimalise_timedelta(timedelta):
+    seconds = timedelta.total_seconds()
+    return seconds / SECS_IN_HOUR
 
 
 class Aeroplane(models.Model):
@@ -71,6 +77,8 @@ class Aeroplane(models.Model):
 
     opening_tte = models.FloatField()  # hours and hundredths of hours
 
+    opening_time = models.FloatField()
+
     #opening_airframe_hours_after_last_check = models.FloatField()  # hours and decimal fraction of hours
 
     arc_expiry = models.DateField()
@@ -79,35 +87,65 @@ class Aeroplane(models.Model):
     def __unicode__(self):
         return "{0} ({1})".format(self.registration, self.model)
 
-    @property
-    def last_check(self):
-        since = self.check_set.order_by("time").last()
-        return since.time
+    def get_last_check(self):
+        last_check = self.check_set.order_by("time").last()
+        if last_check is not None:
+            return last_check
+        # Oh! New 'plane?
+        c = Check()
+        c.aeroplane = self
+        c.time = self.last_annual
+        c.type = self.CHECK_TYPE_ANNUAL
+        c.ttaf = 0
+        return c
+
+    def get_last_check_from(self, fromdate):
+        last_check = self.check_set.filter(time__lte=fromdate).order_by("time").last()
+        if last_check is not None:
+            return last_check
+        # Oh! New 'plane?
+        c = Check()
+        c.aeroplane = self
+        c.time = self.last_annual
+        c.type = self.CHECK_TYPE_ANNUAL
+        c.ttaf = 0
+        return c
 
     @property
-    def last_check_type(self):
-        since = self.check_set.order_by("time").last()
-        return since.type
-
-    @property
-    def last_check_ttaf(self):
-        since = self.check_set.order_by("time").last()
-        return since.ttaf
+    def ttaf(self):
+        logged_dict = self.techlogentry_set.all().annotate(db_block_time=(F('arrival_time') - F('departure_time'))).annotate(db_airborne_time=F('db_block_time')-Value("PT10M")).aggregate(total_logged_airborne=Sum('db_airborne_time'))
+        logged = logged_dict["total_logged_airborne"]
+        if logged is None:
+            logged = 0
+        else:
+            logged = decimalise_timedelta(logged)
+        return self.opening_time + logged
 
     @property
     def flown_hours_since_check(self):
         #  Sum of tech log entries
         # TODO: remove circular dependency :-/
-        last_check = self.check_set.order_by("time").last()
 
-        entries = self.techlogentry_set.filter(departure_time__gt=last_check.time)
-        hours = reduce(lambda h, entry: h+entry.airborne_time, list(entries), timezone.timedelta(0))  #  Can't use Django Aggregate/Sum because time isn't stored in DB
-        hours_in_decimal = hours.total_seconds() / (60*60)  # Like our stored DB 'hours' values, we need hours + decimal fraction of hours
-        return last_check.opening_hours_after_this_check + hours_in_decimal
+        # Total hours minus last check hours (if any)
+        # Where total is all in logbook + opening total
+        last_check = self.get_last_check()
+
+        ttaf = self.ttaf
+
+        flown_since_last_check = ttaf - last_check.ttaf
+
+        return flown_since_last_check
+
+    @property
+    def next_flying_hours_check(self):
+        last = self.get_last_check()
+        next_flying_hours_check = self.calc_next_flying_hours_check(last.type, last.ttaf, self.flown_hours_since_check)
+        return next_flying_hours_check
 
     @property
     def next_check_pair(self):
-        check_pair = self.calc_next_check_pair(self.last_check, self.last_annual, self.last_check_type, self.last_check_ttaf, self.flown_hours_since_check)
+        last = self.get_last_check()
+        check_pair = self.calc_next_check_pair(last.time, self.last_annual, last.type, last.ttaf, self.flown_hours_since_check)
         return check_pair
 
     @classmethod
@@ -133,3 +171,10 @@ class Aeroplane(models.Model):
         next_calendar_check = cls.calc_next_calendar_check(last_check_at, last_annual_check_at)
 
         return CheckPair(next_flying_hours_check, next_calendar_check)
+
+
+class Check(models.Model):
+    aeroplane = models.ForeignKey(Aeroplane)
+    time = models.DateTimeField()
+    type = models.CharField(max_length=10, choices=Aeroplane.CHECK_TYPE_CHOICES)
+    ttaf = models.FloatField()

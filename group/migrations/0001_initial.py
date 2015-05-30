@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 from django.conf import settings
+import uuid
 
 
 class Migration(migrations.Migration):
@@ -17,8 +18,7 @@ class Migration(migrations.Migration):
             name='GroupProfile',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('slug', models.SlugField()),
-                ('secret_key', models.UUIDField()),
+                ('secret_key', models.UUIDField(default=uuid.uuid4)),
                 ('administrators', models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
                 ('group', models.OneToOneField(to='auth.Group')),
             ],
@@ -35,6 +35,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='groupprofile',
             name='roles',
-            field=models.ManyToManyField(to='group.GroupRole'),
+            field=models.ManyToManyField(to='group.GroupRole', blank=True),
         ),
     ]
