@@ -12,6 +12,14 @@ from .models import TechLogEntry
 
 
 @login_required
+def log_entries_redirect(request, aeroplane_reg):
+    now = timezone.now()
+    month = now.month
+    year = now.year
+
+    return HttpResponseRedirect(reverse('techlogentrylist_by_date', args=[aeroplane_reg, year, month]))
+
+@login_required
 def log_entries(request, aeroplane_reg, year=None, month=None):
     now = timezone.now()
     if month is None:
