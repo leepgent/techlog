@@ -37,15 +37,20 @@ def log_entries(request, aeroplane_reg, year=None, month=None):
     log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('departure_time')
     return render(request, "log/techlogentry_list.html", {"aeroplane": aeroplane, "date": d, "logentries": log_entry_list})
 
+def get_commander_choices(owning_group):
+    names = owning_group.user_set.all().values_list("last_name")
+    cmdrs = [(c[0].capitalize(), c[0].capitalize()) for c in names]
+    return cmdrs
 
 @login_required
 def view_entry(request, aeroplane_reg, pk):
     aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+    group = aeroplane.owning_group
     entry = get_object_or_404(TechLogEntry, pk=pk)
 
     if request.method == 'GET':
         form = TechLogEntryForm(instance=entry)
-
+        form.fields["commander"].choices = get_commander_choices(group)
     elif request.method == 'POST':
         form = TechLogEntryForm(request.POST, request.FILES, instance=entry)
         if form.is_valid():
@@ -61,6 +66,7 @@ def view_entry(request, aeroplane_reg, pk):
 @login_required
 def add_flight(request, aeroplane_reg):
     aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+    group = aeroplane.owning_group
     if request.method == "GET":
         last_entry = aeroplane.techlogentry_set.order_by("departure_time").last()
         now = timezone.now().replace(second=0)
@@ -74,6 +80,8 @@ def add_flight(request, aeroplane_reg):
             "defects": "Nil",
             "departure_tacho": "{0:.2f}".format(last_entry.arrival_tacho)}
         )
+
+        form.fields["commander"].choices = get_commander_choices(group)
 
     elif request.method == "POST":
         form = TechLogEntryForm(request.POST, request.FILES)
