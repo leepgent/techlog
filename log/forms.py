@@ -7,7 +7,6 @@ from django.forms import ModelForm, modelform_factory
 from .models import TechLogEntry
 
 TechLogEntryForm = modelform_factory(TechLogEntry, fields=[
-
             "commander",
             "departure_location",
             "arrival_location",
@@ -18,7 +17,8 @@ TechLogEntryForm = modelform_factory(TechLogEntry, fields=[
             "fuel_uplift",
             "oil_uplift",
             "defects",
-            "check_a_completed"
+            "check_a_completed",
+            "consumables_receipt_image"
         ], widgets={
     "fuel_uplift": forms.NumberInput(attrs={'class': 'form-control'}),
     "oil_uplift": forms.NumberInput(attrs={'class': 'form-control'}),
@@ -31,7 +31,4 @@ TechLogEntryForm = modelform_factory(TechLogEntry, fields=[
     "defects": forms.TextInput(attrs={'class': 'form-control'}),
     "departure_time": DateTimeWidget(attrs={'id':'departure_time_id'}, usel10n=True, bootstrap_version=3),
     "arrival_time": DateTimeWidget(attrs={'id':'arrival_time_id'}, usel10n=True, bootstrap_version=3)
-
-
 })
-

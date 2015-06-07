@@ -19,6 +19,7 @@ class TechLogEntry(models.Model):
     oil_uplift = models.FloatField()
     defects = models.TextField(max_length=200)
     check_a_completed = models.BooleanField()
+    consumables_receipt_image = models.ImageField(null=True)
 
     # engine duration, flight duration and airborne times dynamically calculated
 

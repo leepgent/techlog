@@ -47,7 +47,7 @@ def view_entry(request, aeroplane_reg, pk):
         form = TechLogEntryForm(instance=entry)
 
     elif request.method == 'POST':
-        form = TechLogEntryForm(request.POST, instance=entry)
+        form = TechLogEntryForm(request.POST, request.FILES, instance=entry)
         if form.is_valid():
             entry = form.save(commit=False)
             entry.aeroplane = aeroplane
@@ -76,7 +76,7 @@ def add_flight(request, aeroplane_reg):
         )
 
     elif request.method == "POST":
-        form = TechLogEntryForm(request.POST)
+        form = TechLogEntryForm(request.POST, request.FILES)
         if form.is_valid():
             entry = form.save(commit=False)
             entry.aeroplane = aeroplane

@@ -19,7 +19,7 @@
 
 {% block content %}
     <div class="container">
-    <form method="post" action="{% url 'logentry' aeroplane.registration entry.id %}">
+    <form enctype="multipart/form-data" method="post" action="{% url 'logentry' aeroplane.registration entry.id %}">
         <table class="table">
         {% csrf_token %}
         {{ form.as_table }}
