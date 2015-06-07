@@ -3,6 +3,7 @@ from django.db import models
 from django.db.models import F, Value, Sum
 from django.utils import timezone
 from aeroplanes.models import Aeroplane, decimalise_timedelta
+from group.models import GroupMemberProfile
 
 
 class TechLogEntry(models.Model):
@@ -20,6 +21,11 @@ class TechLogEntry(models.Model):
     defects = models.TextField(max_length=200)
     check_a_completed = models.BooleanField()
     consumables_receipt_image = models.ImageField(null=True, blank=True)
+
+    fuel_rebate_price_per_litre = models.FloatField()
+    rate_includes_fuel = models.BooleanField()
+    charge_regime = models.CharField(max_length=20, choices=GroupMemberProfile.CHARGE_REGIME_CHOICES)
+    cost_per_unit = models.FloatField()
 
     # engine duration, flight duration and airborne times dynamically calculated
 
@@ -56,7 +62,6 @@ class TechLogEntry(models.Model):
         #remaining = next_check_ttaf - self.ttaf
         #return remaining
 
-
         since = self.aeroplane.get_last_check_from(self.departure_time)
         next_check = since.ttaf + Aeroplane.MAX_HOURS_BETWEEN_CHECKS
 
@@ -66,4 +71,26 @@ class TechLogEntry(models.Model):
         # TODO: use DB aggregate
         hours = reduce(lambda h, entry: h+entry.airborne_time, list(entries), timezone.timedelta(0))  #  Can't use Django Aggregate/Sum because time isn't stored in DB
         hours_in_decimal = hours.total_seconds() / (60*60)  # Like our stored DB 'hours' values, we need hours + decimal fraction of hours
+
         return next_check - hours_in_decimal - self.aeroplane.opening_time
+
+    @property
+    def gross_cost(self):
+        rate = self.cost_per_hour
+
+        if self.charge_regime == GroupMemberProfile.CHARGE_REGIME_TACHO_HOURS:
+            cost = self.engine_duration * rate
+        else:
+            cost = 0
+
+        return cost
+
+    @property
+    def rebate(self):
+        if self.rate_includes_fuel:
+            return self.fuel_rebate_price_per_litre * self.fuel_uplift
+        return 0
+
+    @property
+    def net_cost(self):
+        return self.gross_cost - self.rebate

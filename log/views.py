@@ -7,6 +7,7 @@ from django.shortcuts import render, get_object_or_404
 # Create your views here.
 from django.utils import timezone
 from aeroplanes.models import Aeroplane
+from group.models import GroupMemberProfile
 from log.forms import TechLogEntryForm
 from .models import TechLogEntry
 
@@ -67,6 +68,10 @@ def view_entry(request, aeroplane_reg, pk):
 def add_flight(request, aeroplane_reg):
     aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
     group = aeroplane.owning_group
+    group_profile = group.groupprofile
+    user = request.user
+    memberprofile = GroupMemberProfile.objects.get(group=group_profile, member=user)
+
     if request.method == "GET":
         last_entry = aeroplane.techlogentry_set.order_by("departure_time").last()
         now = timezone.now().replace(second=0)
@@ -89,6 +94,10 @@ def add_flight(request, aeroplane_reg):
             entry = form.save(commit=False)
             entry.aeroplane = aeroplane
             entry.owner = request.user
+            entry.fuel_rebate_price_per_litre = group_profile.current_fuel_rebate_price_per_litre
+            entry.rate_includes_fuel = memberprofile.current_rate_includes_fuel
+            entry.charge_regime = memberprofile.current_charge_regime
+            entry.cost_per_unit = 80
             entry.save()
             return HttpResponseRedirect(reverse("techlogentrylist", args=[aeroplane.registration]))
 
