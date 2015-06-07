@@ -2,6 +2,11 @@
 {% load decimaltime %}
 {% load staticfiles %}
 
+{% block header %}
+    <link href="{% static 'css/datetimepicker.css' %}" type="text/css" media="all" rel="stylesheet"/>
+    <script type="text/javascript" src="{% static 'js/bootstrap-datetimepicker.js' %}"></script>
+{% endblock %}
+
 {% block breadcrumbs %}
     <div class="container-fluid">
         <ol class="breadcrumb">
@@ -10,7 +15,8 @@
             <li><a href="{% url "techlogentrylist" aeroplane.registration %}">Tech Log</a></li>
             <li>{{ date|date:"Y" }}</li>
             <li class="active">{{ date|date:"F" }} </li>
-            <li><a href="{% url "log_month_summary" aeroplane.registration date|date:"Y" date|date:"n" %}">Summary</a></li>
+            <li><a href="{% url "log_month_summary" aeroplane.registration date|date:"Y" date|date:"n" %}">Summary</a>
+            </li>
         </ol>
     </div>
 {% endblock %}
@@ -20,7 +26,9 @@
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">{{ date|date:"F Y" }}</h3>
+                <h3 class="panel-title">
+                    <input type="text" class="form-control" id="month_picker" value="{{ date|date:"F Y" }}"/>
+                </h3>
             </div>
             <div class="panel-body">
 
@@ -92,4 +100,25 @@
 
         </div>
     </div>
+
+    <script type="text/javascript">
+        $("#month_picker").datetimepicker({
+            minView: 3,
+            autoclose: true,
+            language: 'en',
+            startView: 3,
+            format: 'MM yyyy',
+            todayHighlight: false
+        }).on('changeDate', function (ev) {
+            var d = ev.date;
+            var y = d.getFullYear();
+            var m = d.getMonth() + 1; // thanks, JS.
+            var url = '{% url 'techlogentrylist' aeroplane.registration %}' + y + '/' + m;
+            window.location = url;
+        });
+
+        //var now = new Date('{{ date|date:"Y-m-d" }}');
+        //$('#month_picker').datetimepicker('update', now);
+
+    </script>
 {% endblock %}
