@@ -22,7 +22,7 @@
 {% block content %}
     <div class="container">
 
-        {% for commander, flights in logentries.items %}
+        {% for commander, summary in logentries.items %}
 
             <div class="panel panel-default">
                 <div class="panel-heading">
@@ -37,30 +37,60 @@
                                 <th>From</th>
                                 <th>To</th>
 
+                                <th>Block Time (hh.%hh)</th>
                                 <th>Tacho Time (hh.%hh)</th>
 
                                 <th>Fuel Uplift (L)</th>
                                 <th>Oil Uplift (L)</th>
+
+                                <th>Charge Rate</th>
+                                <th>Gross Cost</th>
+                                <th>Fuel Rebate Rate</th>
+                                <th>Fuel Rebate</th>
+                                <th>Net Cost</th>
+
                                 <th>Receipt</th>
 
                             </tr>
                             </thead>
 
                             <tbody>
-                            {% for entry in flights %}
+                            {% for entry in summary.flight_list %}
                                 <tr>
                                     <td>{{ entry.departure_time|date:"SHORT_DATE_FORMAT" }}</td>
                                     <td>{{ entry.departure_location }}</td>
                                     <td>{{ entry.arrival_location }}</td>
 
+                                    <td>{{ entry.flight_duration }}</td>
                                     <td>{{ entry.engine_duration|stringformat:".02f" }}</td>
 
                                     <td>{{ entry.fuel_uplift }}</td>
                                     <td>{{ entry.oil_uplift }}</td>
+
+                                    <td>{{ entry.cost_per_unit|floatformat:2 }}</td>
+                                    <td>{{ entry.gross_cost|floatformat:2 }}</td>
+                                    <td>{{ entry.fuel_rebate_price_per_litre|floatformat:2 }}</td>
+                                    <td>{{ entry.rebate|floatformat:2 }}</td>
+                                    <td>{{ entry.net_cost|floatformat:2 }}</td>
                                     <td>{% if entry.consumables_receipt_image %}<a href="{{ entry.consumables_receipt_image.url }}">Image</a>{% endif %}</td>
 
                                 </tr>
                             {% endfor %}
+                            <tr>
+                                <td><strong></strong></td>
+                                <td><strong></strong></td>
+                                <td><strong></strong></td>
+                                <td><strong>{{ summary.totals.block }}</strong></td>
+                                <td><strong>{{ summary.totals.tacho|stringformat:".02f" }}</strong></td>
+                                <td><strong>{{ summary.totals.fuel }}</strong></td>
+                                <td><strong>{{ summary.totals.oil }}</strong></td>
+                                <td><strong></strong></td>
+                                <td><strong>{{ summary.totals.gross|floatformat:2 }}</strong></td>
+                                <td><strong></strong></td>
+                                <td><strong>{{ summary.totals.rebate|floatformat:2 }}</strong></td>
+                                <td><strong>{{ summary.totals.net|floatformat:2 }}</strong></td>
+                                <td><strong></strong></td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>

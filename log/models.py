@@ -78,7 +78,7 @@ class TechLogEntry(models.Model):
 
     @property
     def gross_cost(self):
-        rate = self.cost_per_hour
+        rate = self.cost_per_unit
 
         if self.charge_regime == GroupMemberProfile.CHARGE_REGIME_TACHO_HOURS:
             cost = self.engine_duration * rate

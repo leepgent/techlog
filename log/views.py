@@ -112,6 +112,23 @@ def delete_logentry(request, aeroplane_reg, pk):
     return HttpResponseRedirect(reverse("techlogentrylist", args=[aeroplane_reg]))
 
 
+class SummaryTotals(object):
+    def __init__(self):
+        self.block = timezone.timedelta()
+        self.tacho = 0
+        self.fuel = 0
+        self.oil = 0
+        self.gross = 0
+        self.rebate = 0
+        self.net = 0
+
+
+class CommanderMonthSummary(object):
+    def __init__(self):
+        self.totals = SummaryTotals()
+        self.flight_list = None
+
+
 def month_summary(request, aeroplane_reg, year=None, month=None):
     now = timezone.now()
     if month is None:
@@ -132,7 +149,21 @@ def month_summary(request, aeroplane_reg, year=None, month=None):
     for commander_ in this_months_commanders:
         commander = commander_[0]
         flights = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month, commander=commander).order_by('departure_time')
-        commander_list[commander] = flights
+        summary = CommanderMonthSummary()
+        summary.flight_list = flights
+        commander_list[commander] = summary
+
+        # Total up some figures. Eventually whack these calculations into the DB...
+        for flight in flights:
+            # need: total block, total tacho, total fuel, total oil, total gross, total rebate, total net
+            summary.totals.block += flight.flight_duration
+            summary.totals.tacho += flight.engine_duration
+            summary.totals.fuel += flight.fuel_uplift
+            summary.totals.oil += flight.oil_uplift
+            summary.totals.gross += flight.gross_cost
+            summary.totals.rebate += flight.rebate
+            summary.totals.net += flight.net_cost
+
         #commander_list.append(flights)
     #log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('commander')
     return render(request, "log/techlogentry_month_summary.html", {"aeroplane": aeroplane, "date": d, "logentries": commander_list})
