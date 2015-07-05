@@ -7,7 +7,6 @@ from group.models import GroupMemberProfile
 
 
 class TechLogEntry(models.Model):
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL)
     aeroplane = models.ForeignKey(Aeroplane)
     commander = models.TextField(max_length=100)
     departure_location = models.TextField(max_length=100)
