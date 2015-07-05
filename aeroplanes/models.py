@@ -178,3 +178,7 @@ class Check(models.Model):
     time = models.DateTimeField()
     type = models.CharField(max_length=10, choices=Aeroplane.CHECK_TYPE_CHOICES)
     ttaf = models.FloatField()
+
+    def __unicode__(self):
+        return "{0} check for {1} on {2} @ {3} TTAF".format(self.type, self.aeroplane, self.time, self.ttaf)
+
