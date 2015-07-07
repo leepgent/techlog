@@ -37,17 +37,17 @@
                                 <th>From</th>
                                 <th>To</th>
 
-                                <th>Block Time (hh.%hh)</th>
+                                <th>Block Time (hh:mm)</th>
                                 <th>Tacho Time (hh.%hh)</th>
 
                                 <th>Fuel Uplift (L)</th>
                                 <th>Oil Uplift (L)</th>
 
-                                <th>Charge Rate</th>
-                                <th>Gross Cost</th>
-                                <th>Fuel Rebate Rate</th>
-                                <th>Fuel Rebate</th>
-                                <th>Net Cost</th>
+                                <th>Charge Rate (&pound;/unit)</th>
+                                <th>Flight Cost (&pound;)</th>
+                                <th>Fuel Rebate Rate (&pound;/L)</th>
+                                <th>Fuel Rebate (&pound;)</th>
+                                <th>Net Cost (&pound;)</th>
 
                                 <th>Receipt</th>
 
@@ -99,5 +99,35 @@
 
             </div>
         {% endfor %}
+
+    <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Consumables</h3>
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-hover table-condensed">
+                            <thead>
+                            <tr>
+                                <th>Airborne Hours (hh:mm)</th>
+                                <th>Fuel Used (L)</th>
+                                <th>Oil Used (L)</th>
+                                <th>Fuel Consumption (L/a.b. hours)</th>
+                                <th>Oil Consumption (L/a.b. hours)</th>
+                            <tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                            <td>{{ consumables_summary.airborne }}</td>
+                            <td>{{ consumables_summary.fuel }}</td>
+                            <td>{{ consumables_summary.oil }}</td>
+                            <td>{{ consumables_summary.fuel_litres_per_hour|floatformat:2 }}</td>
+                            <td>{{ consumables_summary.oil_litres_per_hour|floatformat:2 }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+    </div>
     </div>
 {% endblock %}

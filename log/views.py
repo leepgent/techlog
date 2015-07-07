@@ -129,6 +129,24 @@ class CommanderMonthSummary(object):
         self.flight_list = None
 
 
+class ConsumablesSummary(object):
+    def __init__(self):
+        self.airborne = timezone.timedelta()
+        self.fuel = 0
+        self.oil = 0
+
+    @property
+    def fuel_litres_per_hour(self):
+        consump = self.fuel / (self.airborne.total_seconds() / (60 * 60))
+        return consump
+
+    @property
+    def oil_litres_per_hour(self):
+        consump = self.oil / (self.airborne.total_seconds() / (60 * 60))
+        return consump
+
+
+
 def month_summary(request, aeroplane_reg, year=None, month=None):
     now = timezone.now()
     if month is None:
@@ -143,6 +161,7 @@ def month_summary(request, aeroplane_reg, year=None, month=None):
     d = timezone.datetime(year=year, month=month, day=1)
 
     aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+    consumables_summary = ConsumablesSummary()
 
     this_months_commanders = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('commander').distinct('commander').values_list('commander')
     commander_list = dict()
@@ -164,9 +183,13 @@ def month_summary(request, aeroplane_reg, year=None, month=None):
             summary.totals.rebate += flight.rebate
             summary.totals.net += flight.net_cost
 
+            consumables_summary.airborne += flight.airborne_time
+            consumables_summary.fuel += flight.fuel_uplift
+            consumables_summary.oil += flight.oil_uplift
+
         #commander_list.append(flights)
     #log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('commander')
-    return render(request, "log/techlogentry_month_summary.html", {"aeroplane": aeroplane, "date": d, "logentries": commander_list})
+    return render(request, "log/techlogentry_month_summary.html", {"aeroplane": aeroplane, "date": d, "logentries": commander_list, "consumables_summary": consumables_summary})
 
 SECS_IN_HOUR=60*60
 def decimalise_time(timedelta):
