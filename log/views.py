@@ -95,11 +95,10 @@ def add_flight(request, aeroplane_reg):
         if form.is_valid():
             entry = form.save(commit=False)
             entry.aeroplane = aeroplane
-            entry.owner = request.user
             entry.fuel_rebate_price_per_litre = group_profile.current_fuel_rebate_price_per_litre
             entry.rate_includes_fuel = memberprofile.current_rate_includes_fuel
             entry.charge_regime = memberprofile.current_charge_regime
-            entry.cost_per_unit = 80
+            entry.cost_per_unit = memberprofile.current_cost_per_unit
             entry.save()
             return HttpResponseRedirect(reverse("techlogentrylist", args=[aeroplane.registration]))
 
