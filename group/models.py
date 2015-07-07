@@ -18,15 +18,6 @@ They also have a secret key which will allow membership of the group.
 We'll use a SlugField for URLS (and maybe the secret key, too)
 """
 class GroupProfile(models.Model):
-    group = models.OneToOneField(Group)
-    roles = models.ManyToManyField(GroupRole, blank=True)
-    current_fuel_rebate_price_per_litre = models.FloatField()
-    secret_key = models.UUIDField(default=uuid.uuid4)
-
-    def __unicode__(self):
-        return "Profile for {0}".format(self.group.name)
-
-class GroupMemberProfile(models.Model):
     CHARGE_REGIME_TACHO_HOURS = "tacho"
     CHARGE_REGIME_BLOCK_HOURS = "block2block"
     CHARGE_REGIME_HOBBS_HOURS = "hobbs"
@@ -39,13 +30,27 @@ class GroupMemberProfile(models.Model):
         (CHARGE_REGIME_AIRBORNE_HOURS, "Airborne"),
     )
 
+    group = models.OneToOneField(Group)
+    roles = models.ManyToManyField(GroupRole, blank=True)
+    current_fuel_rebate_price_per_litre = models.FloatField()
+    secret_key = models.UUIDField(default=uuid.uuid4)
+
+    default_rate_includes_fuel = models.BooleanField()
+    default_charge_regime = models.CharField(max_length=20, choices=CHARGE_REGIME_CHOICES, default=CHARGE_REGIME_TACHO_HOURS)
+    default_cost_per_unit = models.FloatField()
+
+    def __unicode__(self):
+        return "Profile for {0}".format(self.group.name)
+
+class GroupMemberProfile(models.Model):
+
     group = models.ForeignKey(GroupProfile)
     member = models.ForeignKey(settings.AUTH_USER_MODEL)
     role = models.CharField(max_length=200, null=True)
     administrator = models.BooleanField()
 
     current_rate_includes_fuel = models.BooleanField()
-    current_charge_regime = models.CharField(max_length=20, choices=CHARGE_REGIME_CHOICES)
+    current_charge_regime = models.CharField(max_length=20, choices=GroupProfile.CHARGE_REGIME_CHOICES)
     current_cost_per_unit = models.FloatField()
 
     def __unicode__(self):

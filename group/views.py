@@ -23,12 +23,14 @@ def joingroup(request, secret):
         group.user_set.add(user)
 
         group_member_profile = GroupMemberProfile()
-        group_member_profile.group = group
+        group_member_profile.group = groupprofile
         group_member_profile.member = user
         group_member_profile.administrator = False
-        group_member_profile.current_rate_includes_fuel = True
-        group_member_profile.current_charge_regime = GroupMemberProfile.CHARGE_REGIME_TACHO_HOURS
-        group_member_profile.current_cost_per_unit = groupprofile.cu
+        group_member_profile.current_rate_includes_fuel = groupprofile.default_rate_includes_fuel
+        group_member_profile.current_charge_regime = groupprofile.default_charge_regime
+        group_member_profile.current_cost_per_unit = groupprofile.default_cost_per_unit
+
+        group_member_profile.save()
 
         return HttpResponseRedirect(reverse('dashboard'))
 

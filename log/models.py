@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models import F, Value, Sum
 from django.utils import timezone
 from aeroplanes.models import Aeroplane, decimalise_timedelta
-from group.models import GroupMemberProfile
+from group.models import GroupProfile
 
 
 class TechLogEntry(models.Model):
@@ -23,7 +23,7 @@ class TechLogEntry(models.Model):
 
     fuel_rebate_price_per_litre = models.FloatField()
     rate_includes_fuel = models.BooleanField()
-    charge_regime = models.CharField(max_length=20, choices=GroupMemberProfile.CHARGE_REGIME_CHOICES)
+    charge_regime = models.CharField(max_length=20, choices=GroupProfile.CHARGE_REGIME_CHOICES)
     cost_per_unit = models.FloatField()
 
     def __unicode__(self):
@@ -80,7 +80,7 @@ class TechLogEntry(models.Model):
     def gross_cost(self):
         rate = self.cost_per_unit
 
-        if self.charge_regime == GroupMemberProfile.CHARGE_REGIME_TACHO_HOURS:
+        if self.charge_regime == GroupProfile.CHARGE_REGIME_TACHO_HOURS:
             cost = self.engine_duration * rate
         else:
             cost = 0
