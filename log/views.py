@@ -96,7 +96,9 @@ def add_flight(request, aeroplane_reg):
             entry = form.save(commit=False)
             entry.aeroplane = aeroplane
             entry.fuel_rebate_price_per_litre = group_profile.current_fuel_rebate_price_per_litre
+            entry.oil_rebate_price_per_litre = group_profile.oil_rebate_price_per_litre
             entry.rate_includes_fuel = memberprofile.current_rate_includes_fuel
+            entry.rate_includes_oil = memberprofile.current_rate_includes_oil
             entry.charge_regime = memberprofile.current_charge_regime
             entry.cost_per_unit = memberprofile.current_cost_per_unit
             entry.save()
@@ -120,7 +122,8 @@ class SummaryTotals(object):
         self.fuel = 0
         self.oil = 0
         self.gross = 0
-        self.rebate = 0
+        self.fuel_rebate = 0
+        self.oil_rebate = 0
         self.net = 0
 
 
@@ -181,7 +184,8 @@ def month_summary(request, aeroplane_reg, year=None, month=None):
             summary.totals.fuel += flight.fuel_uplift
             summary.totals.oil += flight.oil_uplift
             summary.totals.gross += flight.gross_cost
-            summary.totals.rebate += flight.rebate
+            summary.totals.fuel_rebate += flight.fuel_rebate
+            summary.totals.oil_rebate += flight.oil_rebate
             summary.totals.net += flight.net_cost
 
             consumables_summary.airborne += flight.airborne_time

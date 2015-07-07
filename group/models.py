@@ -33,9 +33,11 @@ class GroupProfile(models.Model):
     group = models.OneToOneField(Group)
     roles = models.ManyToManyField(GroupRole, blank=True)
     current_fuel_rebate_price_per_litre = models.FloatField()
+    current_oil_rebate_price_per_litre = models.FloatField()
     secret_key = models.UUIDField(default=uuid.uuid4)
 
     default_rate_includes_fuel = models.BooleanField()
+    default_rate_includes_oil = models.BooleanField()
     default_charge_regime = models.CharField(max_length=20, choices=CHARGE_REGIME_CHOICES, default=CHARGE_REGIME_TACHO_HOURS)
     default_cost_per_unit = models.FloatField()
 
@@ -50,6 +52,7 @@ class GroupMemberProfile(models.Model):
     administrator = models.BooleanField()
 
     current_rate_includes_fuel = models.BooleanField()
+    current_rate_includes_oil = models.BooleanField()
     current_charge_regime = models.CharField(max_length=20, choices=GroupProfile.CHARGE_REGIME_CHOICES)
     current_cost_per_unit = models.FloatField()
 

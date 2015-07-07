@@ -22,7 +22,9 @@ class TechLogEntry(models.Model):
     consumables_receipt_image = models.ImageField(null=True, blank=True)
 
     fuel_rebate_price_per_litre = models.FloatField()
+    oil_rebate_price_per_litre = models.FloatField()
     rate_includes_fuel = models.BooleanField()
+    rate_includes_oil = models.BooleanField()
     charge_regime = models.CharField(max_length=20, choices=GroupProfile.CHARGE_REGIME_CHOICES)
     cost_per_unit = models.FloatField()
 
@@ -88,10 +90,20 @@ class TechLogEntry(models.Model):
         return cost
 
     @property
-    def rebate(self):
+    def fuel_rebate(self):
         if self.rate_includes_fuel:
             return self.fuel_rebate_price_per_litre * self.fuel_uplift
         return 0
+
+    @property
+    def oil_rebate(self):
+        if self.rate_includes_oil:
+            return self.oil_rebate_price_per_litre * self.oil_uplift
+        return 0
+
+    @property
+    def rebate(self):
+        return self.fuel_rebate + self.oil_rebate
 
     @property
     def net_cost(self):

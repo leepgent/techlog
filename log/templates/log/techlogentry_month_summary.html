@@ -47,6 +47,9 @@
                                 <th>Flight Cost (&pound;)</th>
                                 <th>Fuel Rebate Rate (&pound;/L)</th>
                                 <th>Fuel Rebate (&pound;)</th>
+                                <th>Oil Rebate Rate (&pound;/L)</th>
+                                <th>Oil Rebate (&pound;)</th>
+
                                 <th>Net Cost (&pound;)</th>
 
                                 <th>Receipt</th>
@@ -70,26 +73,30 @@
                                     <td>{{ entry.cost_per_unit|floatformat:2 }}</td>
                                     <td>{{ entry.gross_cost|floatformat:2 }}</td>
                                     <td>{{ entry.fuel_rebate_price_per_litre|floatformat:2 }}</td>
-                                    <td>{{ entry.rebate|floatformat:2 }}</td>
+                                    <td>{{ entry.fuel_rebate|floatformat:2 }}</td>
+                                    <td>{{ entry.oil_rebate_price_per_litre|floatformat:2 }}</td>
+                                    <td>{{ entry.oil_rebate|floatformat:2 }}</td>
                                     <td>{{ entry.net_cost|floatformat:2 }}</td>
                                     <td>{% if entry.consumables_receipt_image %}<a href="{{ entry.consumables_receipt_image.url }}">Image</a>{% endif %}</td>
 
                                 </tr>
                             {% endfor %}
                             <tr>
-                                <td><strong></strong></td>
-                                <td><strong></strong></td>
-                                <td><strong></strong></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
                                 <td><strong>{{ summary.totals.block }}</strong></td>
                                 <td><strong>{{ summary.totals.tacho|stringformat:".02f" }}</strong></td>
                                 <td><strong>{{ summary.totals.fuel }}</strong></td>
                                 <td><strong>{{ summary.totals.oil }}</strong></td>
-                                <td><strong></strong></td>
+                                <td></td>
                                 <td><strong>{{ summary.totals.gross|floatformat:2 }}</strong></td>
-                                <td><strong></strong></td>
-                                <td><strong>{{ summary.totals.rebate|floatformat:2 }}</strong></td>
+                                <td></td>
+                                <td><strong>{{ summary.totals.fuel_rebate|floatformat:2 }}</strong></td>
+                                <td></td>
+                                <td><strong>{{ summary.totals.oil_rebate|floatformat:2 }}</strong></td>
                                 <td><strong>{{ summary.totals.net|floatformat:2 }}</strong></td>
-                                <td><strong></strong></td>
+                                <td></td>
                             </tr>
                             </tbody>
                         </table>
