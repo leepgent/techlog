@@ -3,48 +3,52 @@
 {% block content %}
     <div class="container">
 
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
+        {% if form.errors %}
+            <p>Your username and password didn't match. Please try again.</p>
+        {% endif %}
 
+        <div class="panel panel-default">
+            <div class="panel-heading">Existing Techlog.aero User?</div>
+            <div class="panel-body">
 
+                <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+                    {% csrf_token %}
 
-    <div class="panel panel-default">
-   <div class="panel-heading">Existing Techlog.aero User?</div>
-  <div class="panel-body">
+                    <div class="form-group">
+                        <label for="{{ form.username.id_for_label }}">Username</label>
+                        <input class="form-control" id="{{ form.username.id_for_label }}" maxlength="30"
+                               name="{{ form.username.html_name }}" placeholder="Username" type="text"/>
+                    </div>
 
+                    <div class="form-group">
+                        <label for="{{ form.password.id_for_label }}">Password</label>
+                        <input class="form-control" id="{{ form.password.id_for_label }}" maxlength="30"
+                               name="{{ form.password.html_name }}" placeholder="Password" type="password"/>
+                    </div>
 
-<form method="post" action="{% url 'django.contrib.auth.views.login' %}" >
-{% csrf_token %}
+                    <input type="hidden" name="next" value="{{ next }}"/>
 
-    <div class="form-group">
-        <label for="{{ form.username.id_for_label }}">Username</label>
-        <input class="form-control" id="{{ form.username.id_for_label }}" maxlength="30" name="{{ form.username.html_name }}" placeholder="Username"  type="text" />
-    </div>
+                    <input type="submit" class="btn btn-default" value="Login"/>
 
-    <div class="form-group">
-        <label for="{{ form.password.id_for_label }}">Password</label>
-        <input class="form-control" id="{{ form.password.id_for_label }}" maxlength="30" name="{{ form.password.html_name }}" placeholder="Password" type="password" />
-    </div>
+                </form>
 
-    <input type="hidden" name="next" value="{{ next }}" />
-
-    <input type="submit" class="btn btn-default" value="Login" />
-    </form>
-
+            </div>
         </div>
-</div>
 
-     <div class="panel panel-default">
-   <div class="panel-heading">New User?</div>
-  <div class="panel-body">
-    <a class="btn btn-default" href="{% url 'join' %}?next={{ next }}" title="Join techlog.aero">Join techlog.aero</a>
-  </div>
-</div>
+        <div class="panel panel-default">
+            <div class="panel-heading">New User?</div>
+            <div class="panel-body">
+                <a class="btn btn-default" href="{% url 'join' %}?next={{ next }}" title="Join techlog.aero">Join
+                    techlog.aero</a>
+            </div>
+        </div>
 
-
-
-
+        <div class="panel panel-default">
+            <div class="panel-heading">Forgotten Password?</div>
+            <div class="panel-body">
+                <a class="btn btn-default" href="{%  url 'password_reset' %}">Reset Password</a>
+            </div>
+        </div>
 
     </div>
 {% endblock %}
