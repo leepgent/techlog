@@ -117,3 +117,9 @@ LOGIN_URL = "/login"
 
 MEDIA_ROOT = '/var/www/techlog/www/static/media'
 MEDIA_URL = '/static/media/'
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = '465'
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'lee@leegent.net'
+EMAIL_HOST_PASSWORD = '***REMOVED***'
