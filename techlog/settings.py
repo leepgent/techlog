@@ -123,3 +123,5 @@ EMAIL_PORT = '465'
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = 'lee@leegent.net'
 EMAIL_HOST_PASSWORD = '***REMOVED***'
+EMAIL_SUBJECT_PREFIX = '[techlog.aero] '
+DEFAULT_FROM_EMAIL = 'support@techlog.aero'
