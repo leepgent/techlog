@@ -58,7 +58,6 @@ def view_entry(request, aeroplane_reg, pk):
         if form.is_valid():
             entry = form.save(commit=False)
             entry.aeroplane = aeroplane
-            entry.owner = request.user
             entry.save()
             return HttpResponseRedirect(reverse("techlogentrylist", args=[aeroplane.registration]))
 
@@ -96,7 +95,7 @@ def add_flight(request, aeroplane_reg):
             entry = form.save(commit=False)
             entry.aeroplane = aeroplane
             entry.fuel_rebate_price_per_litre = group_profile.current_fuel_rebate_price_per_litre
-            entry.oil_rebate_price_per_litre = group_profile.oil_rebate_price_per_litre
+            entry.oil_rebate_price_per_litre = group_profile.current_oil_rebate_price_per_litre
             entry.rate_includes_fuel = memberprofile.current_rate_includes_fuel
             entry.rate_includes_oil = memberprofile.current_rate_includes_oil
             entry.charge_regime = memberprofile.current_charge_regime
@@ -109,8 +108,6 @@ def add_flight(request, aeroplane_reg):
 @login_required
 def delete_logentry(request, aeroplane_reg, pk):
     entry = get_object_or_404(TechLogEntry, pk=pk)
-    if entry.owner.id != request.user.id:
-        return HttpResponseForbidden()
     entry.delete()
     return HttpResponseRedirect(reverse("techlogentrylist", args=[aeroplane_reg]))
 
