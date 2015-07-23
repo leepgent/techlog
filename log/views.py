@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import F, Value, Sum, Count, Q
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.utils import timezone
+from django.core import serializers
 from aeroplanes.models import Aeroplane
 from group.models import GroupMemberProfile
 from log.forms import TechLogEntryForm
@@ -240,3 +241,22 @@ def cap398(request, aeroplane_reg, year=None, month=None):
         stat_list.append(day_stats)
 
     return render(request, "log/techlogentry_cap398.html", {"aeroplane": aeroplane, "date": d, "stat_list": stat_list})
+
+
+def log_entries_xml(request, aeroplane_reg, year=None, month=None):
+    now = timezone.now()
+    if month is None:
+        month = now.month
+    else:
+        month = int(month)
+    if year is None:
+        year = now.year
+    else:
+        year = int(year)
+
+    d = timezone.datetime(year=year, month=month, day=1)
+
+    aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+    log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('departure_time')
+    payload = serializers.serialize("xml", log_entry_list)
+    return HttpResponse(payload, content_type='text/xml')
