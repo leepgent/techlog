@@ -260,3 +260,21 @@ def log_entries_xml(request, aeroplane_reg, year=None, month=None):
     log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('departure_time')
     payload = serializers.serialize("xml", log_entry_list)
     return HttpResponse(payload, content_type='text/xml')
+
+def log_entries_json(request, aeroplane_reg, year=None, month=None):
+    now = timezone.now()
+    if month is None:
+        month = now.month
+    else:
+        month = int(month)
+    if year is None:
+        year = now.year
+    else:
+        year = int(year)
+
+    d = timezone.datetime(year=year, month=month, day=1)
+
+    aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+    log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('departure_time')
+    payload = serializers.serialize("json", log_entry_list)
+    return HttpResponse(payload, content_type='application/json')
