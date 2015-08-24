@@ -24,13 +24,9 @@
 {% block content %}
     <div class="container-fluid">
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
                 <h3 class="panel-title">
                     <input type="text" class="form-control" id="month_picker" value="{{ date|date:"F Y" }}"/>
                 </h3>
-            </div>
-            <div class="panel-body">
 
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover table-condensed">
@@ -48,13 +44,13 @@
                             <th>Arrival Tacho</th>
                             <th>Tacho Time</th>
                             <th>Check A</th>
-                            <th>Fuel Uplift</th>
-                            <th>Oil Uplift</th>
+                            <th class="hidden-print">Fuel Uplift</th>
+                            <th class="hidden-print">Oil Uplift</th>
                             <th>Defects</th>
                             <!--th>TTAF</th-->
                             <th>Until next check</th>
-                            <th></th>
-                            <th></th>
+                            <th class="hidden-print"></th>
+                            <th class="hidden-print"></th>
                         </tr>
                         </thead>
 
@@ -79,16 +75,16 @@
                                 <td>{{ entry.engine_duration|stringformat:".02f" }}</td>
                                 <td style="text-align: center">{% if entry.check_a_completed %}
                                     <span class="glyphicon glyphicon-check"></span>{% endif %}</td>
-                                <td>{{ entry.fuel_uplift }}</td>
-                                <td>{{ entry.oil_uplift }}</td>
+                                <td class="hidden-print">{{ entry.fuel_uplift }}</td>
+                                <td class="hidden-print">{{ entry.oil_uplift }}</td>
                                 <td>{{ entry.defects }}</td>
 
                                 <!--td>{{ entry.ttaf|humanise_longhours }}</td-->
                                 <td>{{ entry.until_next_check|humanise_longhours }}</td>
-                                <td><a class="btn btn-default btn-sm"
+                                <td class="hidden-print"><a class="btn btn-default btn-sm" 
                                        href="{% url 'logentry' entry.aeroplane.registration entry.id %}"><span
                                         class="glyphicon glyphicon-edit"></span></a></td>
-                                <td><a class="btn btn-default btn-sm"
+                                <td class="hidden-print"><a class="btn btn-default btn-sm"
                                        href="{% url 'delete_logentry' entry.aeroplane.registration entry.id %}"><span
                                         class="glyphicon glyphicon-remove"></span></a></td>
                             </tr>
@@ -98,7 +94,6 @@
                 </div>
             </div>
 
-        </div>
     </div>
 
     <script type="text/javascript">
