@@ -148,7 +148,6 @@ class ConsumablesSummary(object):
         return consump
 
 
-
 def month_summary(request, aeroplane_reg, year=None, month=None):
     now = timezone.now()
     if month is None:
@@ -190,14 +189,15 @@ def month_summary(request, aeroplane_reg, year=None, month=None):
             consumables_summary.fuel += flight.fuel_uplift
             consumables_summary.oil += flight.oil_uplift
 
-        #commander_list.append(flights)
-    #log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('commander')
     return render(request, "log/techlogentry_month_summary.html", {"aeroplane": aeroplane, "date": d, "logentries": commander_list, "consumables_summary": consumables_summary})
 
 SECS_IN_HOUR=60*60
+
+
 def decimalise_time(timedelta):
     seconds = timedelta.total_seconds()
     return seconds / SECS_IN_HOUR
+
 
 def cap398(request, aeroplane_reg, year=None, month=None):
     now = timezone.now()
@@ -217,11 +217,6 @@ def cap398(request, aeroplane_reg, year=None, month=None):
     aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
 
     # Get the last log entry for last month to find the base TTAF:
-    #last_month = month-1
-    #last_month_year = year
-    #if last_month < 1:
-    #    last_month = 12
-    #    last_month_year = last_month_year - 1
     last_of_last_month = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=last_month.year, departure_time__month=last_month.month).order_by('departure_time').last()
     if last_of_last_month is None:
         last_ttaf = aeroplane.opening_time
@@ -230,11 +225,11 @@ def cap398(request, aeroplane_reg, year=None, month=None):
 
     log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('departure_time')
     day_list = log_entry_list.datetimes('departure_time', 'day')
-    #margin = timezone.timedelta(minutes=10)
+
+    ten_minute_margin = Value("PT10M")
     stat_list = list()
-    #last_ttaf = 2660.25
     for day in day_list:
-        day_stats = log_entry_list.filter(departure_time__day=day.day).annotate(db_block_time=(F('arrival_time') - F('departure_time'))).annotate(db_airborne_time=F('db_block_time')-Value("PT10M")).aggregate(total_airborne=Sum('db_airborne_time'), flight_count=Count("*"))
+        day_stats = log_entry_list.filter(departure_time__day=day.day).annotate(db_block_time=(F('arrival_time') - F('departure_time'))).annotate(db_airborne_time=F('db_block_time')-ten_minute_margin).aggregate(total_airborne=Sum('db_airborne_time'), flight_count=Count("*"))
         day_stats["day"] = day
         day_stats["ttaf"] = last_ttaf + decimalise_time(day_stats["total_airborne"])
         last_ttaf = day_stats["ttaf"]
@@ -260,6 +255,7 @@ def log_entries_xml(request, aeroplane_reg, year=None, month=None):
     log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('departure_time')
     payload = serializers.serialize("xml", log_entry_list)
     return HttpResponse(payload, content_type='text/xml')
+
 
 def log_entries_json(request, aeroplane_reg, year=None, month=None):
     now = timezone.now()

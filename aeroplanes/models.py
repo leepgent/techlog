@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.db import models
@@ -70,16 +71,10 @@ class Aeroplane(models.Model):
     engine = models.CharField(max_length=100)
     propeller = models.CharField(max_length=100)
 
-    #last_check = models.DateField()
-    #last_check_type = models.CharField(choices=CHECK_TYPE_CHOICES, max_length=20)
-    #last_check_ttaf = models.FloatField()  # hours and hundredths of hours
     last_annual = models.DateTimeField()
 
     opening_tte = models.FloatField()  # hours and hundredths of hours
-
     opening_time = models.FloatField()
-
-    #opening_airframe_hours_after_last_check = models.FloatField()  # hours and decimal fraction of hours
 
     arc_expiry = models.DateField()
     insurance_expiry = models.DateField()
@@ -88,39 +83,40 @@ class Aeroplane(models.Model):
     def __unicode__(self):
         return "{0} ({1})".format(self.registration, self.model)
 
+    def _generate_initial_check(self):
+        c = Check()
+        c.aeroplane = self
+        c.time = self.last_annual
+        c.type = self.CHECK_TYPE_ANNUAL
+        c.ttaf = self.opening_time
+        return c
+
     def get_last_check(self):
         last_check = self.check_set.order_by("time").last()
         if last_check is not None:
             return last_check
         # Oh! New 'plane?
-        c = Check()
-        c.aeroplane = self
-        c.time = self.last_annual
-        c.type = self.CHECK_TYPE_ANNUAL
-        c.ttaf = 0
-        return c
+        return self._generate_initial_check()
 
     def get_last_check_from(self, fromdate):
         last_check = self.check_set.filter(time__lte=fromdate).order_by("time").last()
         if last_check is not None:
             return last_check
         # Oh! New 'plane?
-        c = Check()
-        c.aeroplane = self
-        c.time = self.last_annual
-        c.type = self.CHECK_TYPE_ANNUAL
-        c.ttaf = 0
-        return c
+        return self._generate_initial_check()
 
     @property
     def ttaf(self):
-        logged_dict = self.techlogentry_set.all().annotate(db_block_time=(F('arrival_time') - F('departure_time'))).annotate(db_airborne_time=F('db_block_time')-Value("PT10M")).aggregate(total_logged_airborne=Sum('db_airborne_time'))
+        # Current TTAF is the TTAF at the last check [or opening number] + how many AF hours since
+        last_check = self.get_last_check()
+
+        logged_dict = self.techlogentry_set.filter(departure_time__gt=last_check.time).annotate(db_block_time=(F('arrival_time') - F('departure_time'))).annotate(db_airborne_time=F('db_block_time')-Value("PT10M")).aggregate(total_logged_airborne=Sum('db_airborne_time'))
         logged = logged_dict["total_logged_airborne"]
         if logged is None:
             logged = 0
         else:
             logged = decimalise_timedelta(logged)
-        return self.opening_time + logged
+        return last_check.ttaf + logged
 
     @property
     def flown_hours_since_check(self):
