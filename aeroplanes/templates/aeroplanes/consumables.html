@@ -1,0 +1,46 @@
+{% extends "global/root.html" %}
+{% load decimaltime %}
+
+{% load staticfiles %}
+
+{% block breadcrumbs %}
+    <div class="container-fluid">
+        <ol class="breadcrumb">
+            <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
+            <li class="active">{{ aeroplane.registration }}</li>
+        </ol>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Consumables Summary</div>
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>Period</th>
+                        <th>Airborne Hours (hh:mm)</th>
+                        <th>Fuel Used (L)</th>
+                        <th>Oil Used (L)</th>
+                        <th>Fuel Consumption (L/a.b. hours)</th>
+                        <th>Oil Consumption (L/a.b. hours)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for period, consumables_summary in consumables.items %}
+                    <tr>
+                    <td>Last {{ period }} days</td>
+                    <td>{{ consumables_summary.airborne }}</td>
+                    <td>{{ consumables_summary.fuel }}</td>
+                    <td>{{ consumables_summary.oil }}</td>
+                    <td>{{ consumables_summary.fuel_litres_per_hour|floatformat:2 }}</td>
+                    <td>{{ consumables_summary.oil_litres_per_hour|floatformat:2 }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
