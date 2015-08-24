@@ -27,6 +27,7 @@ def joingroup(request, secret):
         group_member_profile.member = user
         group_member_profile.administrator = False
         group_member_profile.current_rate_includes_fuel = groupprofile.default_rate_includes_fuel
+        group_member_profile.current_rate_includes_oil = groupprofile.default_rate_includes_oil
         group_member_profile.current_charge_regime = groupprofile.default_charge_regime
         group_member_profile.current_cost_per_unit = groupprofile.default_cost_per_unit
 
