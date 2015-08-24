@@ -22,5 +22,6 @@ class AeroplaneForm(ModelForm):
                 'last_annual',
                 'opening_tte',
                 'arc_expiry',
+                'radio_expiry',
                 'insurance_expiry'
             ]

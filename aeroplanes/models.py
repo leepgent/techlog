@@ -83,6 +83,7 @@ class Aeroplane(models.Model):
 
     arc_expiry = models.DateField()
     insurance_expiry = models.DateField()
+    radio_expiry = models.DateField()
 
     def __unicode__(self):
         return "{0} ({1})".format(self.registration, self.model)

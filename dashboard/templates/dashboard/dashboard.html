@@ -30,6 +30,7 @@
             <th>On</th>
 
             <th>ARC Expiry</th>
+            <th>Radio License Expiry</th>
             <th>Insurance Expiry</th>
 
             <th></th>
@@ -71,6 +72,9 @@
                 {% endwith %}
             <td>
                 {{ aeroplane.arc_expiry }}
+            </td>
+            <td>
+                {{ aeroplane.radio_expiry }}
             </td>
             <td>
                 {{ aeroplane.insurance_expiry }}
