@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
+from django.http import HttpResponseRedirect, HttpResponseForbidden, HttpResponse
 from log.models import TechLogEntry
 from log.views import ConsumablesSummary
 from .models import Aeroplane
 from .forms import AeroplaneForm
-
+import StringIO
 
 @login_required
 def aeroplane(request, aeroplane_reg):
@@ -13,6 +14,22 @@ def aeroplane(request, aeroplane_reg):
     form = AeroplaneForm(instance=ac)
     return render(request, "aeroplanes/aeroplane.html", {"aeroplane": ac, "last_check": ac.get_last_check(),
                                                          "form": form})
+
+@login_required
+def aeroplane_xml_v1(request, aeroplane_reg):
+    ac = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+    stream = StringIO.StringIO()
+    
+    stream.write("<?xml version='1.0' encoding='UTF-8' ?>")
+    stream.write("<aeroplane regstration='{}'>".format(ac.registration))
+    stream.write("<ttaf>{}</ttaf>".format(ac.ttaf))
+    stream.write("<tte>{}</tte>".format(ac.tte))
+    stream.write("<ttp>{}</ttp>".format(ac.ttp))
+    stream.write("</aeroplane>")
+
+    payload = stream.getvalue()
+    stream.close()
+    return HttpResponse(payload, content_type="text/xml")
 
 
 def _populate_consumables_usage_within_last(days, aeroplane):
