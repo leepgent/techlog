@@ -222,8 +222,12 @@ def cap398(request, aeroplane_reg, year=None, month=None):
     last_of_last_month = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=last_month.year, departure_time__month=last_month.month).order_by('departure_time').last()
     if last_of_last_month is None:
         last_ttaf = aeroplane.opening_time
+        last_tte = aeroplane.opening_tte
+        last_ttp = aeroplane.opening_ttp
     else:
         last_ttaf = last_of_last_month.ttaf
+        last_tte = last_of_last_month.tte
+        last_ttp = last_of_last_month.ttp
 
     log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('departure_time')
     day_list = log_entry_list.datetimes('departure_time', 'day')
@@ -234,7 +238,11 @@ def cap398(request, aeroplane_reg, year=None, month=None):
         day_stats = log_entry_list.filter(departure_time__day=day.day).annotate(db_block_time=(F('arrival_time') - F('departure_time'))).annotate(db_airborne_time=F('db_block_time')-ten_minute_margin).aggregate(total_airborne=Sum('db_airborne_time'), flight_count=Count("*"))
         day_stats["day"] = day
         day_stats["ttaf"] = last_ttaf + decimalise_time(day_stats["total_airborne"])
+        day_stats["tte"] = last_tte + decimalise_time(day_stats["total_airborne"])
+        day_stats["ttp"] = last_ttp + decimalise_time(day_stats["total_airborne"])
         last_ttaf = day_stats["ttaf"]
+        last_tte = day_stats["tte"]
+        last_ttp = day_stats["ttp"]
         stat_list.append(day_stats)
 
     return render(request, "log/techlogentry_cap398.html", {"aeroplane": aeroplane, "date": d, "stat_list": stat_list})

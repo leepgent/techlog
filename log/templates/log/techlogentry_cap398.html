@@ -16,7 +16,7 @@
                 <a href="{% url "techlogentrylist_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}">Tech Log</a> |
                 <a href="{% url "techlogentrylist_technical" aeroplane.registration date|date:"Y" date|date:"n" %}">Times</a> |
                 <a href="{% url "log_month_summary" aeroplane.registration date|date:"Y" date|date:"n" %}">Summary</a> |
-                <strong><a href="{% url "cap398_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}">CAP 398 View</a></strong>
+                <strong><a href="{% url "cap398_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}">CAP 398/399 View</a></strong>
             </li>
 
         </ol>
@@ -28,7 +28,7 @@
 
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">foo</h3>
+                    <h3 class="panel-title">CAP 398/399 View</h3>
                 </div>
                 <div class="panel-body">
                     <div class="table-responsive">
@@ -39,6 +39,8 @@
                                 <th>Flights</th>
                                 <th>Airborne Time</th>
                                 <th>TTAF</th>
+                                <th>TTE</th>
+                                <th>TTP</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -48,6 +50,8 @@
                                     <td>{{ entry.flight_count }}</td>
                                     <td>{{ entry.total_airborne }}</td>
                                     <td>{{ entry.ttaf|humanise_longhours }}</td>
+                                    <td>{{ entry.tte|humanise_longhours }}</td>
+                                    <td>{{ entry.ttp|humanise_longhours }}</td>
                                 </tr>
                             {% endfor %}
                             </tbody>
