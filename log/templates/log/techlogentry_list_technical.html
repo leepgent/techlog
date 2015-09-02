@@ -42,6 +42,7 @@
                             <th>Check A</th>
                             <th>Defects</th>
                             <th>TTAF</th>
+                            <th>TTE</th>
                             <th>Until next check</th>
                         </tr>
                         </thead>
@@ -66,6 +67,7 @@
                                 <td>{{ entry.defects }}</td>
 
                                 <td>{{ entry.ttaf|humanise_longhours }}</td>
+                                <td>{{ entry.tte|humanise_longhours }}</td>
                                 <td>{{ entry.until_next_check|humanise_longhours }}</td>
                             </tr>
                         {% endfor %}
