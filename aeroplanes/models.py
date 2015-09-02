@@ -75,6 +75,7 @@ class Aeroplane(models.Model):
 
     opening_tte = models.FloatField()  # hours and hundredths of hours
     opening_time = models.FloatField()
+    opening_ttp = models.FloatField()
 
     arc_expiry = models.DateField()
     insurance_expiry = models.DateField()
@@ -90,6 +91,7 @@ class Aeroplane(models.Model):
         c.type = self.CHECK_TYPE_ANNUAL
         c.ttaf = self.opening_time
         c.tte = self.opening_tte
+        c.ttp = self.opening_ttp
         return c
 
     def get_last_check(self):
@@ -106,31 +108,37 @@ class Aeroplane(models.Model):
         # Oh! New 'plane?
         return self._generate_initial_check()
 
-    @property
-    def ttaf(self):
-        # Current TTAF is the TTAF at the last check [or opening number] + how many AF hours since
-        last_check = self.get_last_check()
-
-        logged_dict = self.techlogentry_set.filter(departure_time__gt=last_check.time).annotate(db_block_time=(F('arrival_time') - F('departure_time'))).annotate(db_airborne_time=F('db_block_time')-Value("PT10M")).aggregate(total_logged_airborne=Sum('db_airborne_time'))
+    def _airborne_time_since_check(self, check):
+        logged_dict = self.techlogentry_set.filter(departure_time__gt=check.time).annotate(db_block_time=(F('arrival_time') - F('departure_time'))).annotate(db_airborne_time=F('db_block_time')-Value("PT10M")).aggregate(total_logged_airborne=Sum('db_airborne_time'))
         logged = logged_dict["total_logged_airborne"]
         if logged is None:
             logged = 0
         else:
             logged = decimalise_timedelta(logged)
+
+        return logged
+
+
+    @property
+    def ttaf(self):
+        # Current TTAF is the TTAF at the last check [or opening number] + how many AF hours since
+        last_check = self.get_last_check()
+        logged = self._airborne_time_since_check(last_check)
         return last_check.ttaf + logged
 
     @property
     def tte(self):
         # Current TTE is the TTE at the last check [or opening number] + how many flight hours since
         last_check = self.get_last_check()
-
-        logged_dict = self.techlogentry_set.filter(departure_time__gt=last_check.time).annotate(db_block_time=(F('arrival_time') - F('departure_time'))).annotate(db_airborne_time=F('db_block_time')-Value("PT10M")).aggregate(total_logged_airborne=Sum('db_airborne_time'))
-        logged = logged_dict["total_logged_airborne"]
-        if logged is None:
-            logged = 0
-        else:
-            logged = decimalise_timedelta(logged)
+        logged = self._airborne_time_since_check(last_check)
         return last_check.tte + logged
+
+    @property
+    def ttp(self):
+        # Current TTP is the TTP at the last check [or opening number] + how many flight hours since
+        last_check = self.get_last_check()
+        logged = self._airborne_time_since_check(last_check)
+        return last_check.ttp + logged
 
     @property
     def flown_hours_since_check(self):
@@ -190,6 +198,7 @@ class Check(models.Model):
     type = models.CharField(max_length=10, choices=Aeroplane.CHECK_TYPE_CHOICES)
     ttaf = models.FloatField()
     tte = models.FloatField(default=0)
+    ttp = models.FloatField(default=0)
 
     def __unicode__(self):
         return "{0} check for {1} on {2} @ {3} TTAF".format(self.type, self.aeroplane, self.time, self.ttaf)

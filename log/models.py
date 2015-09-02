@@ -46,25 +46,31 @@ class TechLogEntry(models.Model):
     def airborne_time(self):
         return self.flight_duration - timezone.timedelta(minutes=10)
 
+    def _airborne_hours_since_check(self, check):
+        logged_dict = self.aeroplane.techlogentry_set.filter(departure_time__gt=check.time).filter(departure_time__lte=self.departure_time).annotate(db_block_time=(F('arrival_time') - F('departure_time'))).annotate(db_airborne_time=F('db_block_time')-Value("PT10M")).aggregate(total_logged_airborne=Sum('db_airborne_time'))
+        logged = logged_dict["total_logged_airborne"]
+        return logged
+
     @property
     def ttaf(self):
         # Last check (or initial) time + sum of times up to and including myself
         since = self.aeroplane.get_last_check_from(self.departure_time)
-
-        logged_dict = self.aeroplane.techlogentry_set.filter(departure_time__gt=since.time).filter(departure_time__lte=self.departure_time).annotate(db_block_time=(F('arrival_time') - F('departure_time'))).annotate(db_airborne_time=F('db_block_time')-Value("PT10M")).aggregate(total_logged_airborne=Sum('db_airborne_time'))
-        logged = logged_dict["total_logged_airborne"]
-
+        logged = self._airborne_hours_since_check(since)
         return since.ttaf + decimalise_timedelta(logged)
 
     @property
     def tte(self):
         # Last check (or initial) TTE + sum of airborne times up to and including myself
         since = self.aeroplane.get_last_check_from(self.departure_time)
-
-        logged_dict = self.aeroplane.techlogentry_set.filter(departure_time__gt=since.time).filter(departure_time__lte=self.departure_time).annotate(db_block_time=(F('arrival_time') - F('departure_time'))).annotate(db_airborne_time=F('db_block_time')-Value("PT10M")).aggregate(total_logged_airborne=Sum('db_airborne_time'))
-        logged = logged_dict["total_logged_airborne"]
-
+        logged = self._airborne_hours_since_check(since)
         return since.tte + decimalise_timedelta(logged)
+
+    @property
+    def ttp(self):
+        # Last check (or initial) TTE + sum of airborne times up to and including myself
+        since = self.aeroplane.get_last_check_from(self.departure_time)
+        logged = self._airborne_hours_since_check(since)
+        return since.ttp + decimalise_timedelta(logged)
 
     @property
     def until_next_check(self):

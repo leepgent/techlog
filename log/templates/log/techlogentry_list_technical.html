@@ -14,20 +14,27 @@
             <li><a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane.registration }}</a></li>
             <li><a href="{% url "techlogentrylist" aeroplane.registration %}">Tech Log</a></li>
             <li>{{ date|date:"Y" }}</li>
-            <li class="active">{{ date|date:"F" }} </li>
-            <li><a href="{% url "log_month_summary" aeroplane.registration date|date:"Y" date|date:"n" %}">Summary</a>
+            <li>{{ date|date:"F" }}</li>
+            <li>
+                <a href="{% url "techlogentrylist_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}">Tech Log</a> |
+                <strong><a href="{% url "techlogentrylist_technical" aeroplane.registration date|date:"Y" date|date:"n" %}">Times</a></strong> |
+                <a href="{% url "log_month_summary" aeroplane.registration date|date:"Y" date|date:"n" %}">Summary</a> |
+                <a href="{% url "cap398_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}">CAP 398 View</a>
             </li>
+
         </ol>
     </div>
 {% endblock %}
 
 {% block content %}
     <div class="container-fluid">
-
+        <div class="panel panel-default">
+            <div class="panel-heading">
                 <h3 class="panel-title">
                     <input type="text" class="form-control" id="month_picker" value="{{ date|date:"F Y" }}"/>
                 </h3>
-
+            </div>
+            <div class="panel-body">
                 <div class="table-responsive">
                     <table class="table table-bordered table-hover table-condensed">
                         <thead>
@@ -43,6 +50,7 @@
                             <th>Defects</th>
                             <th>TTAF</th>
                             <th>TTE</th>
+                            <th>TTP</th>
                             <th>Until next check</th>
                         </tr>
                         </thead>
@@ -68,6 +76,7 @@
 
                                 <td>{{ entry.ttaf|humanise_longhours }}</td>
                                 <td>{{ entry.tte|humanise_longhours }}</td>
+                                <td>{{ entry.ttp|humanise_longhours }}</td>
                                 <td>{{ entry.until_next_check|humanise_longhours }}</td>
                             </tr>
                         {% endfor %}
@@ -75,7 +84,7 @@
                     </table>
                 </div>
             </div>
-
+        </div>
     </div>
 
     <script type="text/javascript">

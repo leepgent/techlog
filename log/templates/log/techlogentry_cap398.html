@@ -10,11 +10,15 @@
             <li><a href="{% url "techlogentrylist" aeroplane.registration %}">Tech Log</a></li>
             <li>{{ date|date:"Y" }}</li>
             <li>
-                <a href="{% url "techlogentrylist_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}">{{ date|date:"F" }}</a>
+               {{ date|date:"F" }}
             </li>
-            <li><a href="{% url "log_month_summary" aeroplane.registration date|date:"Y" date|date:"n" %}">Summary</a>
+            <li>
+                <a href="{% url "techlogentrylist_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}">Tech Log</a> |
+                <a href="{% url "techlogentrylist_technical" aeroplane.registration date|date:"Y" date|date:"n" %}">Times</a> |
+                <a href="{% url "log_month_summary" aeroplane.registration date|date:"Y" date|date:"n" %}">Summary</a> |
+                <strong><a href="{% url "cap398_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}">CAP 398 View</a></strong>
             </li>
-            <li class="active">CAP 398 View</li>
+
         </ol>
     </div>
 {% endblock %}
