@@ -21,6 +21,7 @@ def log_entries_redirect(request, aeroplane_reg):
 
     return HttpResponseRedirect(reverse('techlogentrylist_by_date', args=[aeroplane_reg, year, month]))
 
+
 @login_required
 def log_entries(request, aeroplane_reg, year=None, month=None):
     now = timezone.now()
@@ -38,6 +39,7 @@ def log_entries(request, aeroplane_reg, year=None, month=None):
     aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
     log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('departure_time')
     return render(request, "log/techlogentry_list.html", {"aeroplane": aeroplane, "date": d, "logentries": log_entry_list})
+
 
 def get_commander_choices(owning_group):
     names = owning_group.user_set.all().values_list("last_name")
@@ -274,3 +276,27 @@ def log_entries_json(request, aeroplane_reg, year=None, month=None):
     log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('departure_time')
     payload = serializers.serialize("json", log_entry_list)
     return HttpResponse(payload, content_type='application/json')
+
+
+@login_required
+def log_entries_technical(request, aeroplane_reg, year=None, month=None):
+    now = timezone.now()
+    if month is None:
+        month = now.month
+    else:
+        month = int(month)
+    if year is None:
+        year = now.year
+    else:
+        year = int(year)
+
+    d = timezone.datetime(year=year, month=month, day=1)
+
+    aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+    log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('departure_time')
+    return render(request, "log/techlogentry_list_technical.html",
+                  {
+                      "aeroplane": aeroplane,
+                      "date": d,
+                      "logentries": log_entry_list
+                  })

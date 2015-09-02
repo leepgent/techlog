@@ -38,16 +38,11 @@
                             <th colspan="2">Arrival</th>
                             <th>Flight Duration</th>
                             <th>Airborne Time</th>
-                            <th>Departure Tacho</th>
-                            <th>Arrival Tacho</th>
                             <th>Tacho Time</th>
                             <th>Check A</th>
-                            <th class="hidden-print">Fuel Uplift</th>
-                            <th class="hidden-print">Oil Uplift</th>
                             <th>Defects</th>
+                            <th>TTAF</th>
                             <th>Until next check</th>
-                            <th class="hidden-print"></th>
-                            <th class="hidden-print"></th>
                         </tr>
                         </thead>
 
@@ -65,22 +60,13 @@
                                 <td>{{ entry.flight_duration }}</td>
                                 <td>{{ entry.airborne_time }}</td>
 
-                                <td>{{ entry.departure_tacho|stringformat:".02f" }}</td>
-                                <td>{{ entry.arrival_tacho|stringformat:".02f" }}</td>
                                 <td>{{ entry.engine_duration|stringformat:".02f" }}</td>
                                 <td style="text-align: center">{% if entry.check_a_completed %}
                                     <span class="glyphicon glyphicon-check"></span>{% endif %}</td>
-                                <td class="hidden-print">{{ entry.fuel_uplift }}</td>
-                                <td class="hidden-print">{{ entry.oil_uplift }}</td>
                                 <td>{{ entry.defects }}</td>
 
+                                <td>{{ entry.ttaf|humanise_longhours }}</td>
                                 <td>{{ entry.until_next_check|humanise_longhours }}</td>
-                                <td class="hidden-print"><a class="btn btn-default btn-sm" 
-                                       href="{% url 'logentry' entry.aeroplane.registration entry.id %}"><span
-                                        class="glyphicon glyphicon-edit"></span></a></td>
-                                <td class="hidden-print"><a class="btn btn-default btn-sm"
-                                       href="{% url 'delete_logentry' entry.aeroplane.registration entry.id %}"><span
-                                        class="glyphicon glyphicon-remove"></span></a></td>
                             </tr>
                         {% endfor %}
                         </tbody>

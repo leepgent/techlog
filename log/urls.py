@@ -6,6 +6,7 @@ __author__ = 'Lee.Gent'
 urlpatterns = [
     url(r'^$', views.log_entries_redirect, name='techlogentrylist'),
     url(r'^(?P<year>\d+)/(?P<month>\d+)$', views.log_entries, name="techlogentrylist_by_date"),
+    url(r'^(?P<year>\d+)/(?P<month>\d+)/technical$', views.log_entries_technical, name="techlogentrylist_technical"),
     url(r'^(?P<year>\d+)/(?P<month>\d+)/xml$', views.log_entries_xml, name="techlogentrylist_by_date_xml"),
     url(r'^(?P<year>\d+)/(?P<month>\d+)/json$', views.log_entries_json, name="techlogentrylist_by_date_json"),
     url(r'^(?P<year>\d+)/(?P<month>\d+)/monthsummary$', views.month_summary, name="log_month_summary"),
