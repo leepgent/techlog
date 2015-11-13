@@ -141,11 +141,15 @@ class ConsumablesSummary(object):
 
     @property
     def fuel_litres_per_hour(self):
+        if not self.airborne.total_seconds() > 0:
+            return 0.0
         consump = self.fuel / (self.airborne.total_seconds() / (60 * 60))
         return consump
 
     @property
     def oil_litres_per_hour(self):
+        if not self.airborne.total_seconds() > 0:
+            return 0.0
         consump = self.oil / (self.airborne.total_seconds() / (60 * 60))
         return consump
 
