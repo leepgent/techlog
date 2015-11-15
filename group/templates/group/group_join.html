@@ -2,17 +2,11 @@
 
 {% load staticfiles %}
 
-{% block breadcrumbs %}
-    <div class="container-fluid">
-        <ol class="breadcrumb">
-            <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
-            <li class="active">Join {{ profile.group.name }}</li>
-        </ol>
-    </div>
-{% endblock %}
-
 {% block content %}
-    <div class="container">
-    <p>Do you wish to join the group '{{ profile.group.name }}'? &nbsp;<a class="btn btn-default" href="{% url 'joingroup' profile.secret_key %}?confirm" title="Confirm Group Join">Confirm join</a></p>
+
+    <div class="page-header">
+        <h2>{{ profile.group.name }}</h2>
     </div>
+
+    <p>Do you wish to join the group '{{ profile.group.name }}'? &nbsp;<a class="btn btn-default" href="{% url 'joingroup' profile.secret_key %}?confirm" title="Confirm Group Join">Confirm join</a></p>
 {% endblock %}

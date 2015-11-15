@@ -1,8 +1,6 @@
 {% extends "global/root.html" %}
 
 {% block content %}
-    <div class="container">
-
     <form method="post" action="{% url 'join' %}">
         {% csrf_token %}
     <table class="table">
@@ -15,5 +13,4 @@
             <input type="hidden" name="next" value="{{ next }}" />
 
         </form>
-    </div>
 {% endblock %}

@@ -6,19 +6,12 @@
 {{ form.media }}
 {% endblock %}
 
-{% block breadcrumbs %}
-    <div class="container-fluid">
-    <ol class="breadcrumb">
-    <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
-    <li><a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane.registration }}</a></li>
-    <li><a href="{% url 'techlogentrylist' aeroplane.registration %}">Tech Log</a></li>
-    <li class="active">Edit Flight on {{ entry.departure_time|date:"SHORT_DATE_FORMAT" }} - Capt {{ entry.commander }} ({{ entry.departure_location }} - {{ entry.arrival_location }})</li>
-    </ol>
-    </div>
-{% endblock %}
 
 {% block content %}
-    <div class="container">
+       <div class="page-header">
+  <h2>Edit Flight on {{ entry.departure_time|date:"SHORT_DATE_FORMAT" }} - Capt {{ entry.commander }} ({{ entry.departure_location }} - {{ entry.arrival_location }})</h2>
+</div>
+
     <form enctype="multipart/form-data" method="post" action="{% url 'logentry' aeroplane.registration entry.id %}">
         <table class="table">
         {% csrf_token %}
@@ -29,6 +22,6 @@
         </tr>
         </table>
         </form>
-    </div>
+
 
 {% endblock %}

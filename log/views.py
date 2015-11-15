@@ -22,6 +22,45 @@ def log_entries_redirect(request, aeroplane_reg):
     return HttpResponseRedirect(reverse('techlogentrylist_by_date', args=[aeroplane_reg, year, month]))
 
 
+def _generate_back_forward_date_links(base_view_name, aeroplane_reg, year, month):
+    next_month_year = year
+    next_month_month = month + 1
+    if next_month_month > 12:
+        next_month_month = 1
+        next_month_year += 1
+
+    next_month_date = timezone.datetime(year=next_month_year, month=next_month_month, day=1)
+
+    last_month_year = year
+    last_month_month = month - 1
+    if last_month_month < 1:
+        last_month_month = 12
+        last_month_year -= 1
+
+    last_month_date = timezone.datetime(year=last_month_year, month=last_month_month, day=1)
+
+    next_year_date = timezone.datetime(year=year + 1, month=month, day=1)
+    last_year_date = timezone.datetime(year=year - 1, month=month, day=1)
+
+    next_month_link = reverse(base_view_name, args=(aeroplane_reg, next_month_date.year, next_month_date.month))
+    last_month_link = reverse(base_view_name, args=(aeroplane_reg, last_month_date.year, last_month_date.month))
+    next_year_link = reverse(base_view_name, args=(aeroplane_reg, next_year_date.year, next_year_date.month))
+    last_year_link = reverse(base_view_name, args=(aeroplane_reg, last_year_date.year, last_year_date.month))
+
+    context_dict = {
+        "next_month_date": next_month_date,
+        "last_month_date": last_month_date,
+        "next_year_date": next_year_date,
+        "last_year_date": last_year_date,
+        "last_month_link": last_month_link,
+        "next_month_link": next_month_link,
+        "last_year_link": last_year_link,
+        "next_year_link": next_year_link
+    }
+
+    return context_dict
+
+
 @login_required
 def log_entries(request, aeroplane_reg, year=None, month=None):
     now = timezone.now()
@@ -37,14 +76,25 @@ def log_entries(request, aeroplane_reg, year=None, month=None):
     d = timezone.datetime(year=year, month=month, day=1)
 
     aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+
     log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('departure_time')
-    return render(request, "log/techlogentry_list.html", {"aeroplane": aeroplane, "date": d, "logentries": log_entry_list})
+    date_link_dict = _generate_back_forward_date_links('techlogentrylist_by_date', aeroplane_reg, year, month)
+
+    context_dict = {
+        "aeroplane": aeroplane,
+        "date": d,
+        "logentries": log_entry_list
+    }
+    context_dict.update(date_link_dict)
+
+    return render(request, "log/techlogentry_list.html", context_dict)
 
 
-def get_commander_choices(owning_group):
+def _get_commander_choices(owning_group):
     names = owning_group.user_set.all().values_list("last_name")
     cmdrs = [(c[0].capitalize(), c[0].capitalize()) for c in names]
     return cmdrs
+
 
 @login_required
 def view_entry(request, aeroplane_reg, pk):
@@ -54,10 +104,10 @@ def view_entry(request, aeroplane_reg, pk):
 
     if request.method == 'GET':
         form = TechLogEntryForm(instance=entry)
-        form.fields["commander"].choices = get_commander_choices(group)
+        form.fields["commander"].choices = _get_commander_choices(group)
     elif request.method == 'POST':
         form = TechLogEntryForm(request.POST, request.FILES, instance=entry)
-        form.fields["commander"].choices = get_commander_choices(group)
+        form.fields["commander"].choices = _get_commander_choices(group)
         if form.is_valid():
             entry = form.save(commit=False)
             entry.aeroplane = aeroplane
@@ -89,11 +139,11 @@ def add_flight(request, aeroplane_reg):
             "departure_tacho": "{0:.2f}".format(last_entry.arrival_tacho)}
         )
 
-        form.fields["commander"].choices = get_commander_choices(group)
+        form.fields["commander"].choices = _get_commander_choices(group)
 
     elif request.method == "POST":
         form = TechLogEntryForm(request.POST, request.FILES)
-        form.fields["commander"].choices = get_commander_choices(group)
+        form.fields["commander"].choices = _get_commander_choices(group)
         if form.is_valid():
             entry = form.save(commit=False)
             entry.aeroplane = aeroplane
@@ -195,17 +245,34 @@ def month_summary(request, aeroplane_reg, year=None, month=None):
             consumables_summary.fuel += flight.fuel_uplift
             consumables_summary.oil += flight.oil_uplift
 
-    return render(request, "log/techlogentry_month_summary.html", {"aeroplane": aeroplane, "date": d, "logentries": commander_list, "consumables_summary": consumables_summary})
+    date_link_dict = _generate_back_forward_date_links('log_month_summary', aeroplane_reg, year, month)
+    context = {
+        "aeroplane": aeroplane,
+        "date": d,
+        "logentries": commander_list,
+        "consumables_summary": consumables_summary
+    }
+    context.update(date_link_dict)
+
+    return render(request, "log/techlogentry_month_summary.html", context)
 
 SECS_IN_HOUR=60*60
 
 
-def decimalise_time(timedelta):
+def _decimalise_time(timedelta):
     seconds = timedelta.total_seconds()
     return seconds / SECS_IN_HOUR
 
 
 def cap398(request, aeroplane_reg, year=None, month=None):
+    return _cap398(request, "log/techlogentry_cap398.html", aeroplane_reg, year, month)
+
+
+def cap398_print(request, aeroplane_reg, year=None, month=None):
+    return _cap398(request, "log/techlogentry_cap398.print.html", aeroplane_reg, year, month)
+
+
+def _cap398(request, template, aeroplane_reg, year=None, month=None):
     now = timezone.now()
     if month is None:
         month = now.month
@@ -241,15 +308,24 @@ def cap398(request, aeroplane_reg, year=None, month=None):
     for day in day_list:
         day_stats = log_entry_list.filter(departure_time__day=day.day).annotate(db_block_time=(F('arrival_time') - F('departure_time'))).annotate(db_airborne_time=F('db_block_time')-ten_minute_margin).aggregate(total_airborne=Sum('db_airborne_time'), flight_count=Count("*"))
         day_stats["day"] = day
-        day_stats["ttaf"] = last_ttaf + decimalise_time(day_stats["total_airborne"])
-        day_stats["tte"] = last_tte + decimalise_time(day_stats["total_airborne"])
-        day_stats["ttp"] = last_ttp + decimalise_time(day_stats["total_airborne"])
+        day_stats["ttaf"] = last_ttaf + _decimalise_time(day_stats["total_airborne"])
+        day_stats["tte"] = last_tte + _decimalise_time(day_stats["total_airborne"])
+        day_stats["ttp"] = last_ttp + _decimalise_time(day_stats["total_airborne"])
         last_ttaf = day_stats["ttaf"]
         last_tte = day_stats["tte"]
         last_ttp = day_stats["ttp"]
         stat_list.append(day_stats)
 
-    return render(request, "log/techlogentry_cap398.html", {"aeroplane": aeroplane, "date": d, "stat_list": stat_list})
+    context = {
+        "aeroplane": aeroplane,
+        "date": d,
+        "stat_list": stat_list
+    }
+
+    date_link_dict = _generate_back_forward_date_links('cap398_by_date', aeroplane_reg, year, month)
+    context.update(date_link_dict)
+
+    return render(request, template, context)
 
 
 def log_entries_xml(request, aeroplane_reg, year=None, month=None):
@@ -292,6 +368,17 @@ def log_entries_json(request, aeroplane_reg, year=None, month=None):
 
 @login_required
 def log_entries_technical(request, aeroplane_reg, year=None, month=None):
+    template = "log/techlogentry_list_technical.html"
+    return _log_entries_technical(request, template, aeroplane_reg, year, month)
+
+
+@login_required
+def log_entries_technical_print(request, aeroplane_reg, year=None, month=None):
+    template = "log/techlogentry_list_technical.print.html"
+    return _log_entries_technical(request, template, aeroplane_reg, year, month)
+
+
+def _log_entries_technical(request, template, aeroplane_reg, year=None, month=None):
     now = timezone.now()
     if month is None:
         month = now.month
@@ -304,11 +391,15 @@ def log_entries_technical(request, aeroplane_reg, year=None, month=None):
 
     d = timezone.datetime(year=year, month=month, day=1)
 
+    date_link_dict = _generate_back_forward_date_links('techlogentrylist_technical', aeroplane_reg, year, month)
+
     aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
     log_entry_list = TechLogEntry.objects.filter(aeroplane=aeroplane, departure_time__year=year, departure_time__month=month).order_by('departure_time')
-    return render(request, "log/techlogentry_list_technical.html",
-                  {
+    context_dict = {
                       "aeroplane": aeroplane,
                       "date": d,
                       "logentries": log_entry_list
-                  })
+                  }
+    context_dict.update(date_link_dict)
+
+    return render(request, template, context_dict)

@@ -1,0 +1,45 @@
+<div class="page-header">
+    <div class="clearfix">
+        <h2 class="pull-left">Tech Log for {{ aeroplane.registration }}</h2>
+
+        <nav class="pull-right">
+            {% if printview %}
+                <ul class="pagination">
+                    <li>
+                        <a  href="{% url printview aeroplane.registration date|date:"Y" date|date:"n"%}">⎙</a>
+                    </li>
+                </ul>
+            {% endif %}
+
+            <ul class="pagination">
+
+                <li>
+                    <a href="{{ last_month_link }}" aria-label="Previous Month" class="hidden-print">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li><a href="#">{{ date|date:"F" }}</a></li>
+
+                <li>
+                    <a href="{{ next_month_link }}" aria-label="Next Month" class="hidden-print">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+            <ul class="pagination">
+                <li>
+                    <a href="{{ last_year_link }}" aria-label="Previous Year" class="hidden-print">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li><a href="#">{{ date|date:"Y" }}</a></li>
+
+                <li>
+                    <a href="{{ next_year_link }}" aria-label="Next Year" class="hidden-print">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>

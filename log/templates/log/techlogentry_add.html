@@ -7,20 +7,11 @@
 {% endblock %}
 
 
-{% block breadcrumbs %}
-    <div class="container-fluid">
-    <ol class="breadcrumb">
-
-    <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
-    <li><a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane.registration }}</a></li>
-    <li><a href="{% url 'techlogentrylist' aeroplane.registration %}">Tech Log</a></li>
-    <li class="active">Add Flight</li>
-    </ol>
-    </div>
-{% endblock %}
-
 {% block content %}
-    <div class="container">
+               <div class="page-header">
+  <h2>Add Flight for {{ aeroplane.registration}}</h2>
+</div>
+
         <form enctype="multipart/form-data" method="post" action="{% url 'addflight' aeroplane.registration %}">
             <table class="table">
                 {% csrf_token %}
@@ -28,7 +19,4 @@
                 <tr><td></td><td><input type="submit" class="btn btn-default" value="Add Flight" /></td></tr>
             </table>
         </form>
-    </div>
-
-
 {% endblock %}

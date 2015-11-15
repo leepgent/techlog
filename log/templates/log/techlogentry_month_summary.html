@@ -2,143 +2,118 @@
 {% load decimaltime %}
 {% load staticfiles %}
 
-{% block breadcrumbs %}
-    <div class="container-fluid">
-        <ol class="breadcrumb">
-            <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
-            <li><a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane.registration }}</a></li>
-            <li><a href="{% url "techlogentrylist" aeroplane.registration %}">Tech Log</a></li>
-            <li>{{ date|date:"Y" }}</li>
-            <li>
-                {{ date|date:"F" }}
-            </li>
-            <li>
-                <a href="{% url "techlogentrylist_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}">Tech Log</a> |
-                <a href="{% url "techlogentrylist_technical" aeroplane.registration date|date:"Y" date|date:"n" %}">Times</a> |
-                <strong><a href="{% url "log_month_summary" aeroplane.registration date|date:"Y" date|date:"n" %}">Summary</a></strong> |
-                <a href="{% url "cap398_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}">CAP 398/399 View</a>
-            </li>
-
-        </ol>
-    </div>
-{% endblock %}
-
 {% block content %}
-    <div class="container">
+    {% include 'log/datenav.html' %}
 
-        {% for commander, summary in logentries.items %}
+    <ul class="nav nav-tabs">
+        <li role="presentation"><a href="{% url "techlogentrylist_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}">Tech Log</a></li>
+        <li role="presentation"><a href="{% url "techlogentrylist_technical" aeroplane.registration date|date:"Y" date|date:"n" %}">Times</a></li>
+        <li role="presentation" class="active"><a href="{% url "log_month_summary" aeroplane.registration date|date:"Y" date|date:"n" %}">Summary</a></li>
+        <li role="presentation"><a href="{% url "cap398_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}">CAP 398/399 View</a></li>
+    </ul>
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">{{ commander }}</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover table-condensed">
-                            <thead>
+    {% for commander, summary in logentries.items %}
+        <h3>Capt {{ commander }}</h3>
+                <div class="table-responsive">
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>From</th>
+                            <th>To</th>
+
+                            <th>Block Time (hh:mm)</th>
+                            <th>Tacho Time (hh.%hh)</th>
+
+                            <th>Fuel Uplift (L)</th>
+                            <th>Oil Uplift (L)</th>
+
+                            <th>Charge Rate (&pound;/unit)</th>
+                            <th>Flight Cost (&pound;)</th>
+                            <th>Fuel Rebate Rate (&pound;/L)</th>
+                            <th>Fuel Rebate (&pound;)</th>
+                            <th>Oil Rebate Rate (&pound;/L)</th>
+                            <th>Oil Rebate (&pound;)</th>
+
+                            <th>Net Cost (&pound;)</th>
+
+                            <th>Receipt</th>
+
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for entry in summary.flight_list %}
                             <tr>
-                                <th>Date</th>
-                                <th>From</th>
-                                <th>To</th>
+                                <td>{{ entry.departure_time|date:"SHORT_DATE_FORMAT" }}</td>
+                                <td>{{ entry.departure_location }}</td>
+                                <td>{{ entry.arrival_location }}</td>
 
-                                <th>Block Time (hh:mm)</th>
-                                <th>Tacho Time (hh.%hh)</th>
+                                <td>{{ entry.flight_duration }}</td>
+                                <td>{{ entry.engine_duration|stringformat:".02f" }}</td>
 
-                                <th>Fuel Uplift (L)</th>
-                                <th>Oil Uplift (L)</th>
+                                <td>{{ entry.fuel_uplift }}</td>
+                                <td>{{ entry.oil_uplift }}</td>
 
-                                <th>Charge Rate (&pound;/unit)</th>
-                                <th>Flight Cost (&pound;)</th>
-                                <th>Fuel Rebate Rate (&pound;/L)</th>
-                                <th>Fuel Rebate (&pound;)</th>
-                                <th>Oil Rebate Rate (&pound;/L)</th>
-                                <th>Oil Rebate (&pound;)</th>
-
-                                <th>Net Cost (&pound;)</th>
-
-                                <th>Receipt</th>
+                                <td>{{ entry.cost_per_unit|floatformat:2 }}</td>
+                                <td>{{ entry.gross_cost|floatformat:2 }}</td>
+                                <td>{{ entry.fuel_rebate_price_per_litre|floatformat:2 }}</td>
+                                <td>{{ entry.fuel_rebate|floatformat:2 }}</td>
+                                <td>{{ entry.oil_rebate_price_per_litre|floatformat:2 }}</td>
+                                <td>{{ entry.oil_rebate|floatformat:2 }}</td>
+                                <td>{{ entry.net_cost|floatformat:2 }}</td>
+                                <td>{% if entry.consumables_receipt_image %}<a href="{{ entry.consumables_receipt_image.url }}">Image</a>{% endif %}</td>
 
                             </tr>
-                            </thead>
-
-                            <tbody>
-                            {% for entry in summary.flight_list %}
-                                <tr>
-                                    <td>{{ entry.departure_time|date:"SHORT_DATE_FORMAT" }}</td>
-                                    <td>{{ entry.departure_location }}</td>
-                                    <td>{{ entry.arrival_location }}</td>
-
-                                    <td>{{ entry.flight_duration }}</td>
-                                    <td>{{ entry.engine_duration|stringformat:".02f" }}</td>
-
-                                    <td>{{ entry.fuel_uplift }}</td>
-                                    <td>{{ entry.oil_uplift }}</td>
-
-                                    <td>{{ entry.cost_per_unit|floatformat:2 }}</td>
-                                    <td>{{ entry.gross_cost|floatformat:2 }}</td>
-                                    <td>{{ entry.fuel_rebate_price_per_litre|floatformat:2 }}</td>
-                                    <td>{{ entry.fuel_rebate|floatformat:2 }}</td>
-                                    <td>{{ entry.oil_rebate_price_per_litre|floatformat:2 }}</td>
-                                    <td>{{ entry.oil_rebate|floatformat:2 }}</td>
-                                    <td>{{ entry.net_cost|floatformat:2 }}</td>
-                                    <td>{% if entry.consumables_receipt_image %}<a href="{{ entry.consumables_receipt_image.url }}">Image</a>{% endif %}</td>
-
-                                </tr>
-                            {% endfor %}
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td><strong>{{ summary.totals.block }}</strong></td>
-                                <td><strong>{{ summary.totals.tacho|stringformat:".02f" }}</strong></td>
-                                <td><strong>{{ summary.totals.fuel }}</strong></td>
-                                <td><strong>{{ summary.totals.oil }}</strong></td>
-                                <td></td>
-                                <td><strong>{{ summary.totals.gross|floatformat:2 }}</strong></td>
-                                <td></td>
-                                <td><strong>{{ summary.totals.fuel_rebate|floatformat:2 }}</strong></td>
-                                <td></td>
-                                <td><strong>{{ summary.totals.oil_rebate|floatformat:2 }}</strong></td>
-                                <td><strong>{{ summary.totals.net|floatformat:2 }}</strong></td>
-                                <td></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
+                        {% endfor %}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><strong>{{ summary.totals.block }}</strong></td>
+                            <td><strong>{{ summary.totals.tacho|stringformat:".02f" }}</strong></td>
+                            <td><strong>{{ summary.totals.fuel }}</strong></td>
+                            <td><strong>{{ summary.totals.oil }}</strong></td>
+                            <td></td>
+                            <td><strong>{{ summary.totals.gross|floatformat:2 }}</strong></td>
+                            <td></td>
+                            <td><strong>{{ summary.totals.fuel_rebate|floatformat:2 }}</strong></td>
+                            <td></td>
+                            <td><strong>{{ summary.totals.oil_rebate|floatformat:2 }}</strong></td>
+                            <td><strong>{{ summary.totals.net|floatformat:2 }}</strong></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
 
-            </div>
-        {% endfor %}
 
-    <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Consumables</h3>
-                </div>
-                <div class="panel-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-hover table-condensed">
-                            <thead>
-                            <tr>
-                                <th>Airborne Hours (hh:mm)</th>
-                                <th>Fuel Used (L)</th>
-                                <th>Oil Used (L)</th>
-                                <th>Fuel Consumption (L/a.b. hours)</th>
-                                <th>Oil Consumption (L/a.b. hours)</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                            <td>{{ consumables_summary.airborne }}</td>
-                            <td>{{ consumables_summary.fuel }}</td>
-                            <td>{{ consumables_summary.oil }}</td>
-                            <td>{{ consumables_summary.fuel_litres_per_hour|floatformat:2 }}</td>
-                            <td>{{ consumables_summary.oil_litres_per_hour|floatformat:2 }}</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    {% endfor %}
+
+
+
+    <h3>Consumables</h3>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover table-condensed">
+            <thead>
+            <tr>
+                <th>Airborne Hours (hh:mm)</th>
+                <th>Fuel Used (L)</th>
+                <th>Oil Used (L)</th>
+                <th>Fuel Consumption (L/a.b. hours)</th>
+                <th>Oil Consumption (L/a.b. hours)</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+            <td>{{ consumables_summary.airborne }}</td>
+            <td>{{ consumables_summary.fuel }}</td>
+            <td>{{ consumables_summary.oil }}</td>
+            <td>{{ consumables_summary.fuel_litres_per_hour|floatformat:2 }}</td>
+            <td>{{ consumables_summary.oil_litres_per_hour|floatformat:2 }}</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
-    </div>
+
 {% endblock %}

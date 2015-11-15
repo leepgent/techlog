@@ -1,0 +1,21 @@
+
+@page
+{
+    size: auto;   /* auto is the initial value */
+
+    /* this affects the margin in the printer settings */
+    margin-bottom: 10mm;
+    margin-top: 10mm;
+    margin-left: 10mm;
+    margin-right: 10mm;
+}
+
+body {
+    font-family: Gill Sans, Frutiger, Myriad, Optima, Verdana, sans-serif;
+
+    font-size: small;
+}
+
+th {
+    text-align: center;
+}

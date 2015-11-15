@@ -3,18 +3,7 @@
 
 {% load staticfiles %}
 
-{% block breadcrumbs %}
-    <div class="container-fluid">
-        <ol class="breadcrumb">
-            <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
-            <li class="active">{{ aeroplane.registration }}</li>
-        </ol>
-    </div>
-{% endblock %}
-
 {% block content %}
-    <div class="container">
-
         <div class="panel panel-default">
             <div class="panel-heading">Aeroplane Details</div>
             <table class="table table-responsive">
@@ -125,6 +114,4 @@
                 </tr>
             </table>
         </div>
-
-    </div>
 {% endblock %}

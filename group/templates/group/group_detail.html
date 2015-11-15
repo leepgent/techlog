@@ -2,17 +2,11 @@
 
 {% load staticfiles %}
 
-{% block breadcrumbs %}
-    <div class="container-fluid">
-        <ol class="breadcrumb">
-            <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
-            <li class="active">{{ profile.group.name }}</li>
-        </ol>
-    </div>
-{% endblock %}
-
 {% block content %}
-    <div class="container">
+
+           <div class="page-header">
+  <h2>{{ profile.group.name }}</h2>
+</div>
 
     <div class="panel panel-default">
   <div class="panel-heading">Secret key - give this to people to allow them to join the {{ profile.group.name }} group</div>
@@ -80,8 +74,4 @@
 
   </div>
 </div>
-
-
-
-    </div>
 {% endblock %}

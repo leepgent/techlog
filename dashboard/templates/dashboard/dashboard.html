@@ -3,21 +3,16 @@
 {% load checktype %}
 {% load staticfiles %}
 
-{% block breadcrumbs %}
-    <div class="container-fluid">
-    <ol class="breadcrumb">
-    <li class="active">Dashboard</li>
-    </ol>
-    </div>
-{% endblock %}
 
 {% block content %}
-    <div class="container-fluid">
+               <div class="page-header">
+  <h2>Dashboard for {{ user.get_full_name }}</h2>
+</div>
 
     {% for group in user.groups.all %}
         <h3><span class="icon ion-person-stalker"></span>&nbsp;<a href="{% url 'group' group.id %}">{{ group }}</a></h3>
 	<div class="table-responsive">
-        <table class="table table-condensed table-bordered table-hover">
+        <table class="table table-condensed table-hover">
         <thead>
         <tr>
             <th>Registration</th>
@@ -92,7 +87,7 @@
         </tbody>
         </table>
 	</div>
-        </div>
+
     {% empty %}
             <p>You don't belong to any Aeroplane Groups. Get a member of a group to send you their secret key to join in!</p>
 

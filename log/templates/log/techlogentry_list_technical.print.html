@@ -1,0 +1,71 @@
+{% load decimaltime %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Tech Log for {{ aeroplane.registration }}: {{ date|date:"F Y" }}</title>
+    <style type="text/css">
+        body {
+            font-family: sans-serif;
+        }
+        table {
+            border-collapse: collapse;
+        }
+        table, td, th {
+            border: 1px solid lightgrey;
+
+        }
+    </style>
+</head>
+<body>
+
+<h1>Tech Log for {{ aeroplane.registration }}: {{ date|date:"F Y" }}</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Date</th>
+            <th>PIC</th>
+            <th colspan="2">Departure</th>
+            <th colspan="2">Arrival</th>
+            <th>Flight Duration</th>
+            <th>Airborne Time</th>
+            <th>Check A</th>
+            <th>Defects</th>
+            <th>TTAF</th>
+            <th>TTE</th>
+            <th>TTP</th>
+            <th>Until next check</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for entry in logentries %}
+            <tr>
+                <td>{{ entry.departure_time|date:"d/m" }}</td>
+                <td>{{ entry.commander }}</td>
+
+                <td>{{ entry.departure_location }} </td>
+                <td>{{ entry.departure_time|time:"H:i" }}</td>
+                <td>{{ entry.arrival_location }} </td>
+                <td>{{ entry.arrival_time|time:"H:i" }}</td>
+
+                <td>{{ entry.flight_duration }}</td>
+                <td>{{ entry.airborne_time }}</td>
+
+                <td style="text-align: center">{% if entry.check_a_completed %}✓{% endif %}</td>
+                <td>{{ entry.defects }}</td>
+
+                <td>{{ entry.ttaf|humanise_longhours }}</td>
+                <td>{{ entry.tte|humanise_longhours }}</td>
+                <td>{{ entry.ttp|humanise_longhours }}</td>
+                <td>{{ entry.until_next_check|humanise_longhours }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+<script type="application/javascript">
+    window.print();
+</script>
+</body>
+</html>

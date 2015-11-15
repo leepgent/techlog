@@ -3,108 +3,67 @@
 {% load staticfiles %}
 
 {% block header %}
-    <link href="{% static 'css/datetimepicker.css' %}" type="text/css" media="all" rel="stylesheet"/>
-    <script type="text/javascript" src="{% static 'js/bootstrap-datetimepicker.js' %}"></script>
-{% endblock %}
 
-{% block breadcrumbs %}
-    <div class="container-fluid">
-        <ol class="breadcrumb">
-            <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
-            <li><a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane.registration }}</a></li>
-            <li><a href="{% url "techlogentrylist" aeroplane.registration %}">Tech Log</a></li>
-            <li>{{ date|date:"Y" }}</li>
-            <li>{{ date|date:"F" }}</li>
-            <li>
-                <a href="{% url "techlogentrylist_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}">Tech Log</a> |
-                <strong><a href="{% url "techlogentrylist_technical" aeroplane.registration date|date:"Y" date|date:"n" %}">Times</a></strong> |
-                <a href="{% url "log_month_summary" aeroplane.registration date|date:"Y" date|date:"n" %}">Summary</a> |
-                <a href="{% url "cap398_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}">CAP 398/399 View</a>
-            </li>
-
-        </ol>
-    </div>
 {% endblock %}
 
 {% block content %}
-    <div class="container-fluid">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title">
-                    <input type="text" class="form-control" id="month_picker" value="{{ date|date:"F Y" }}"/>
-                </h3>
-            </div>
-            <div class="panel-body">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover table-condensed">
-                        <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Commander</th>
-                            <th colspan="2">Departure</th>
-                            <th colspan="2">Arrival</th>
-                            <th>Flight Duration</th>
-                            <th>Airborne Time</th>
-                            <th>Tacho Time</th>
-                            <th>Check A</th>
-                            <th>Defects</th>
-                            <th>TTAF</th>
-                            <th>TTE</th>
-                            <th>TTP</th>
-                            <th>Until next check</th>
-                        </tr>
-                        </thead>
 
-                        <tbody>
-                        {% for entry in logentries %}
-                            <tr>
-                                <td>{{ entry.departure_time|date:"SHORT_DATE_FORMAT" }}</td>
-                                <td>{{ entry.commander }}</td>
+    {% include 'log/datenav.html' with printview='techlogentrylist_technical_print' %}
 
-                                <td>{{ entry.departure_location }} </td>
-                                <td>{{ entry.departure_time|time:"H:i" }}</td>
-                                <td>{{ entry.arrival_location }} </td>
-                                <td>{{ entry.arrival_time|time:"H:i" }}</td>
+    <ul class="nav nav-tabs">
+      <li role="presentation"><a href="{% url "techlogentrylist_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}" class="hidden-print">Tech Log</a></li>
+      <li role="presentation" class="active"><a href="{% url "techlogentrylist_technical" aeroplane.registration date|date:"Y" date|date:"n" %}" class="hidden-print">Times</a></li>
+      <li role="presentation"><a href="{% url "log_month_summary" aeroplane.registration date|date:"Y" date|date:"n" %}" class="hidden-print">Summary</a></li>
+      <li role="presentation"><a href="{% url "cap398_by_date" aeroplane.registration date|date:"Y" date|date:"n" %}" class="hidden-print">CAP 398/399 View</a></li>
+    </ul>
 
-                                <td>{{ entry.flight_duration }}</td>
-                                <td>{{ entry.airborne_time }}</td>
+    <div class="table-responsive">
+        <table class="table table-hover table-condensed">
+            <thead>
+            <tr>
+                <th>Date</th>
+                <th>PIC</th>
+                <th colspan="2">Departure</th>
+                <th colspan="2">Arrival</th>
+                <th>Flight Duration</th>
+                <th>Airborne Time</th>
+                <th>Tacho Time</th>
+                <th>Check A</th>
+                <th>Defects</th>
+                <th>TTAF</th>
+                <th>TTE</th>
+                <th>TTP</th>
+                <th>Until next check</th>
+            </tr>
+            </thead>
 
-                                <td>{{ entry.engine_duration|stringformat:".02f" }}</td>
-                                <td style="text-align: center">{% if entry.check_a_completed %}
-                                    <span class="glyphicon glyphicon-check"></span>{% endif %}</td>
-                                <td>{{ entry.defects }}</td>
+            <tbody>
+            {% for entry in logentries %}
+                <tr>
+                    <td>{{ entry.departure_time|date:"SHORT_DATE_FORMAT" }}</td>
+                    <td>{{ entry.commander }}</td>
 
-                                <td>{{ entry.ttaf|humanise_longhours }}</td>
-                                <td>{{ entry.tte|humanise_longhours }}</td>
-                                <td>{{ entry.ttp|humanise_longhours }}</td>
-                                <td>{{ entry.until_next_check|humanise_longhours }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
+                    <td>{{ entry.departure_location }} </td>
+                    <td>{{ entry.departure_time|time:"H:i" }}</td>
+                    <td>{{ entry.arrival_location }} </td>
+                    <td>{{ entry.arrival_time|time:"H:i" }}</td>
+
+                    <td>{{ entry.flight_duration }}</td>
+                    <td>{{ entry.airborne_time }}</td>
+
+                    <td>{{ entry.engine_duration|stringformat:".02f" }}</td>
+                    <td style="text-align: center">{% if entry.check_a_completed %}✓{% endif %}</td>
+                    <td>{{ entry.defects }}</td>
+
+                    <td>{{ entry.ttaf|humanise_longhours }}</td>
+                    <td>{{ entry.tte|humanise_longhours }}</td>
+                    <td>{{ entry.ttp|humanise_longhours }}</td>
+                    <td>{{ entry.until_next_check|humanise_longhours }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 
-    <script type="text/javascript">
-        $("#month_picker").datetimepicker({
-            minView: 3,
-            autoclose: true,
-            language: 'en',
-            startView: 3,
-            format: 'MM yyyy',
-            todayHighlight: false
-        }).on('changeDate', function (ev) {
-            var d = ev.date;
-            var y = d.getFullYear();
-            var m = d.getMonth() + 1; // thanks, JS.
-            var url = '{% url 'techlogentrylist' aeroplane.registration %}' + y + '/' + m;
-            window.location = url;
-        });
 
-        //var now = new Date('{{ date|date:"Y-m-d" }}');
-        //$('#month_picker').datetimepicker('update', now);
-
-    </script>
 {% endblock %}

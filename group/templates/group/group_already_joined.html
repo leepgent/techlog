@@ -2,17 +2,6 @@
 
 {% load staticfiles %}
 
-{% block breadcrumbs %}
-    <div class="container-fluid">
-        <ol class="breadcrumb">
-            <li><a href="{% url 'dashboard' %}" title="Dashboard">Dashboard</a></li>
-            <li class="active">Join {{ profile.group.name }}</li>
-        </ol>
-    </div>
-{% endblock %}
-
 {% block content %}
-    <div class="container">
     <p>You are already a member of the '{{ profile.group.name }}' group.</p>
-    </div>
 {% endblock %}
