@@ -15,7 +15,6 @@ def aeroplane(request, aeroplane_reg):
     return render(request, "aeroplanes/aeroplane.html", {"aeroplane": ac, "last_check": ac.get_last_check(),
                                                          "form": form})
 
-@login_required
 def aeroplane_xml_v1(request, aeroplane_reg):
     ac = get_object_or_404(Aeroplane, registration=aeroplane_reg)
     stream = StringIO.StringIO()
