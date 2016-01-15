@@ -1,11 +1,8 @@
 from datetimewidget.widgets import DateTimeWidget
 from django import forms
-from django.forms import widgets
+from django.forms import widgets, inlineformset_factory, ModelForm
 
-__author__ = 'lee'
-
-from django.forms import ModelForm
-from .models import TechLogEntry
+from .models import TechLogEntry, ConsumablesReceipt
 
 
 class TechLogEntryForm(ModelForm):
@@ -24,8 +21,7 @@ class TechLogEntryForm(ModelForm):
             "fuel_uplift",
             "oil_uplift",
             "defects",
-            "check_a_completed",
-            "consumables_receipt_image"
+            "check_a_completed"
         ]
         widgets = {
             "fuel_uplift": widgets.NumberInput(attrs={'class': 'form-control'}),
@@ -38,5 +34,12 @@ class TechLogEntryForm(ModelForm):
             "defects": widgets.TextInput(attrs={'class': 'form-control'}),
             "departure_time": DateTimeWidget(attrs={'id': 'departure_time_id'}, usel10n=True, bootstrap_version=3),
             "arrival_time": DateTimeWidget(attrs={'id': 'arrival_time_id'}, usel10n=True, bootstrap_version=3),
-            "consumables_receipt_image": widgets.ClearableFileInput(attrs={'class': 'form-control'})
         }
+
+InlineConsumablesReceiptFormSet = inlineformset_factory(
+        TechLogEntry,
+        ConsumablesReceipt,
+        fields=('image',),
+        extra=2,
+        widgets={"image": widgets.ClearableFileInput(attrs={'class': 'form-control'})}
+)

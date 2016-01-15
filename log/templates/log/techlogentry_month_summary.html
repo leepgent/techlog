@@ -37,7 +37,7 @@
 
                             <th>Net Cost (&pound;)</th>
 
-                            <th>Receipt</th>
+                            <th>Receipts</th>
 
                         </tr>
                         </thead>
@@ -62,7 +62,12 @@
                                 <td>{{ entry.oil_rebate_price_per_litre|floatformat:2 }}</td>
                                 <td>{{ entry.oil_rebate|floatformat:2 }}</td>
                                 <td>{{ entry.net_cost|floatformat:2 }}</td>
-                                <td>{% if entry.consumables_receipt_image %}<a href="{{ entry.consumables_receipt_image.url }}">Image</a>{% endif %}</td>
+                                <td>
+                                    {% for consumables_receipt_image in entry.consumablesreceipt_set.all %}
+                                        <a href="{{ consumables_receipt_image.image.url }}">Image</a>
+                                    {% endfor %}
+
+                                </td>
 
                             </tr>
                         {% endfor %}

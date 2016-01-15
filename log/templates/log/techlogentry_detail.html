@@ -3,25 +3,33 @@
 {% load staticfiles %}
 
 {% block header %}
-{{ form.media }}
+    {{ form.media }}
 {% endblock %}
 
 
 {% block content %}
-       <div class="page-header">
-  <h2>Edit Flight on {{ entry.departure_time|date:"SHORT_DATE_FORMAT" }} - Capt {{ entry.commander }} ({{ entry.departure_location }} - {{ entry.arrival_location }})</h2>
-</div>
+    <div class="page-header">
+        <h2>Edit Flight on {{ entry.departure_time|date:"SHORT_DATE_FORMAT" }} - Capt {{ entry.commander }}
+            ({{ entry.departure_location }} - {{ entry.arrival_location }})</h2>
+    </div>
 
     <form enctype="multipart/form-data" method="post" action="{% url 'logentry' aeroplane.registration entry.id %}">
         <table class="table">
-        {% csrf_token %}
-        {{ form.as_table }}
-        <tr>
-            <td></td>
-            <td><input type="submit" class="btn btn-default" value="Save Flight" /></td>
-        </tr>
+            <tr>
+                <td colspan="2"><h3>Flight Details</h3></td>
+            </tr>
+            {% csrf_token %}
+            {{ form.as_table }}
+            <tr>
+                <td colspan="2"><h3>Consumables Receipts</h3></td>
+            </tr>
+            {{ receipts_form.as_table }}
+            <tr>
+                <td></td>
+                <td><input type="submit" class="btn btn-default" value="Save Flight"/></td>
+            </tr>
         </table>
-        </form>
+    </form>
 
 
 {% endblock %}

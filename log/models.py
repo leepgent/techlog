@@ -1,5 +1,4 @@
 from __future__ import unicode_literals
-from django.conf import settings
 from django.db import models
 from django.db.models import F, Value, Sum
 from django.utils import timezone
@@ -20,7 +19,6 @@ class TechLogEntry(models.Model):
     oil_uplift = models.FloatField()
     defects = models.TextField(max_length=200)
     check_a_completed = models.BooleanField()
-    consumables_receipt_image = models.ImageField(null=True, blank=True)
 
     fuel_rebate_price_per_litre = models.FloatField()
     oil_rebate_price_per_litre = models.FloatField()
@@ -110,3 +108,8 @@ class TechLogEntry(models.Model):
     @property
     def net_cost(self):
         return self.gross_cost - self.rebate
+
+
+class ConsumablesReceipt(models.Model):
+    image = models.FileField()
+    log_entry = models.ForeignKey("TechLogEntry")
