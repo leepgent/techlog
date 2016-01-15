@@ -125,3 +125,6 @@ EMAIL_HOST_USER = 'lee@leegent.net'
 EMAIL_HOST_PASSWORD = '***REMOVED***'
 EMAIL_SUBJECT_PREFIX = '[techlog.aero] '
 DEFAULT_FROM_EMAIL = 'support@techlog.aero'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
