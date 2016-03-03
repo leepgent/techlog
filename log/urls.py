@@ -1,6 +1,6 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
-import views
+from . import views
 __author__ = 'Lee.Gent'
 
 urlpatterns = [

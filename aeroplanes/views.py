@@ -6,7 +6,7 @@ from log.models import TechLogEntry
 from log.views import ConsumablesSummary
 from .models import Aeroplane
 from .forms import AeroplaneForm
-import StringIO
+from io import StringIO
 
 @login_required
 def aeroplane(request, aeroplane_reg):

@@ -27,7 +27,7 @@ class TechLogEntry(models.Model):
     charge_regime = models.CharField(max_length=20, choices=GroupProfile.CHARGE_REGIME_CHOICES)
     cost_per_unit = models.FloatField()
 
-    def __unicode__(self):
+    def __str__(self):
         return "Flight in {0} by {1} at {2}".format(self.aeroplane, self.commander, self.departure_time)
 
     # engine duration, flight duration and airborne times dynamically calculated
