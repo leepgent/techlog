@@ -5,28 +5,38 @@
 {% block content %}
 
            <div class="page-header">
-  <h2>{{ profile.group.name }}</h2>
+  <h2>Edit {{ profile.group.name }}</h2>
 </div>
-
-    <div class="panel panel-default">
-  <div class="panel-heading">Secret key - give this to people to allow them to join the {{ profile.group.name }} group</div>
-  <div class="panel-body">
-
-      <p><a href="{% url 'joingroup' profile.secret_key %}" title="Join {{ profile.group.name }}">{{ request.META.HTTP_HOST }}{% url 'joingroup' profile.secret_key %}</a></p>
-
-    </div>
-    </div>
-
-    <div class="panel panel-default">
-  <div class="panel-heading">Group Aeroplanes</div>
-  <div class="panel-body">
-    <ul class="list-group">
-        {% for aeroplane in profile.group.aeroplane_set.all %}
-            <li class="list-group-item"><a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane }}</a></li>
-        {% endfor %}
-        </ul>
-  </div>
-</div>
+        <div class="table-responsive">
+            <table class="table table-hover table-condensed">
+                <thead>
+                <tr>
+           <th>User</th>
+           <th>Active?</th>
+           <th>Group Admin?</th>
+	   <th>Role</th>
+           <th>Rate Includes Fuel?</th>
+           <th>Rate Includes Oil?</th>
+           <th>Charge Regime</th>
+           <th>Cost per Unit</th>
+           </tr>
+           </thead>
+           <tbody>
+           {% for user_group_profile in profile.groupmemberprofile_set.all %}
+           <tr>
+           <td>{{ user_group_profile.member }}</td>
+           <td>{{ user_group_profile.member.is_active }}</td>
+           <td>{{ user_group_profile.administrator }}</td>
+           <td>{{ user_group_profile.role }}</td>
+           <td>{{ user_group_profile.current_rate_includes_fuel }}</td>
+           <td>{{ user_group_profile.current_rate_includes_oil }}</td>
+           <td>{{ user_group_profile.current_charge_regime }}</td>
+           <td>{{ user_group_profile.current_cost_per_unit }}</td>
+           </tr>
+	   {% endfor %}
+           </tbody>
+           </table>
+          </div>
 
     <div class="panel panel-default">
   <div class="panel-heading">Group Members</div>
@@ -46,7 +56,7 @@
         {% for user_profile in admins %}
             <li class="list-group-item">{{ user_profile.member.get_full_name }} ({{ user_profile.member.get_username }})</li>
         {% endfor %}
-   </ul>
+        </ul>
   </div>
 </div>
 

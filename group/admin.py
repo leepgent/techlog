@@ -1,10 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.admin import GroupAdmin
 from django.contrib.auth.models import Group
-from .models import GroupProfile, GroupRole, GroupMemberProfile
+from .models import GroupProfile, GroupContact, GroupMemberProfile
 
 
-@admin.register(GroupRole)
+@admin.register(GroupContact)
 class GroupRoleAdmin(admin.ModelAdmin):
     pass
 

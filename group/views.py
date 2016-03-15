@@ -7,9 +7,25 @@ from .models import GroupProfile, GroupMemberProfile
 
 @login_required
 def group(request, pk):
-    groupprofile = get_object_or_404(GroupProfile, id=pk)
-    return render(request, "group/group_detail.html", {"profile": groupprofile})
+    group_profile = get_object_or_404(GroupProfile, id=pk)
+    group = group_profile.group
+    group_admins = group_profile.groupmemberprofile_set.filter(administrator=True)
+    context = {
+        'profile': group_profile,
+        'admins': group_admins
+    }
+    return render(request, "group/group_detail.html", context)
 
+@login_required
+def edit_group(request, pk):
+    group_profile = get_object_or_404(GroupProfile, id=pk)
+    group = group_profile.group
+    group_admins = group_profile.groupmemberprofile_set.filter(administrator=True)
+    context = {
+        'profile': group_profile,
+        'admins': group_admins
+    }
+    return render(request, 'group/group_edit.html', context)
 
 @login_required
 def join_group(request, secret):
