@@ -44,11 +44,25 @@ def _populate_consumables_usage_within_last(days, aeroplane):
     return consumables_in_x
 
 
+def _populate_total_consumables_usage(aeroplane):
+    flights_in_x = TechLogEntry.objects.filter(aeroplane=aeroplane)
+
+    consumables_in_x = ConsumablesSummary()
+    for flight in flights_in_x:
+        consumables_in_x.airborne += flight.airborne_time
+        consumables_in_x.fuel += flight.fuel_uplift
+        consumables_in_x.oil += flight.oil_uplift
+    return consumables_in_x
+
 @login_required
 def consumables(request, aeroplane_reg):
     ac = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+    first_flight = TechLogEntry.objects.filter(aeroplane=ac).order_by('departure_time').first()
+    now = timezone.now()
+    diff = now - first_flight.departure_time
 
     consumables_usage_map = {
+        diff.days: _populate_total_consumables_usage(ac),
         30: _populate_consumables_usage_within_last(30, ac),
         60: _populate_consumables_usage_within_last(60, ac),
         90: _populate_consumables_usage_within_last(90, ac),
