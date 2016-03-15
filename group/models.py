@@ -56,5 +56,6 @@ class GroupMemberProfile(models.Model):
     current_charge_regime = models.CharField(max_length=20, choices=GroupProfile.CHARGE_REGIME_CHOICES)
     current_cost_per_unit = models.FloatField()
 
-    def __unicode__(self):
-        return "{0} - {1}".format(self.group.group.name, self.member.get_username())
+    def __str__(self):
+        return "{} - {}".format(self.group.group.name, self.member.get_username())
+

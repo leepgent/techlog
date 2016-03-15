@@ -113,7 +113,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = '/var/www/techlog/www/static'
 
 LOGIN_REDIRECT_URL = "/dashboard"
-LOGIN_URL = "/login"
+LOGIN_URL = "/login/"
 
 MEDIA_ROOT = '/var/www/techlog/www/static/media'
 MEDIA_URL = '/static/media/'

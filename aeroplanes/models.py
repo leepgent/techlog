@@ -81,7 +81,7 @@ class Aeroplane(models.Model):
     insurance_expiry = models.DateField()
     radio_expiry = models.DateField()
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0} ({1})".format(self.registration, self.model)
 
     def _generate_initial_check(self):
@@ -200,6 +200,6 @@ class Check(models.Model):
     tte = models.FloatField(default=0)
     ttp = models.FloatField(default=0)
 
-    def __unicode__(self):
+    def __str__(self):
         return "{0} check for {1} on {2} @ {3} TTAF".format(self.type, self.aeroplane, self.time, self.ttaf)
 

@@ -1,5 +1,5 @@
 from django.conf.urls import url, include
-import views
+from . import views
 from log import urls as techlog_urls
 __author__ = 'Lee.Gent'
 
