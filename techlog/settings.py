@@ -12,9 +12,11 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+# Parse database configuration from $DATABASE_URL
+import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
@@ -81,12 +83,7 @@ WSGI_APPLICATION = 'techlog.wsgi.application'
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'techlog',
-        'USER': 'techlog',
-        'PASSWORD': 'techlog'
-    }
+    'default': dj_database_url.config()
 }
 
 
@@ -110,12 +107,12 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 STATIC_URL = '/static/'
-STATIC_ROOT = '/var/www/techlog/www/static'
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles')
 
 LOGIN_REDIRECT_URL = "/dashboard"
 LOGIN_URL = "/login/"
 
-MEDIA_ROOT = '/var/www/techlog/www/static/media'
+MEDIA_ROOT = os.path.join(STATIC_ROOT, 'media')
 MEDIA_URL = '/static/media/'
 
 EMAIL_HOST = 'smtp.gmail.com'
@@ -128,3 +125,4 @@ DEFAULT_FROM_EMAIL = 'support@techlog.aero'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'

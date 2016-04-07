@@ -1,8 +1,9 @@
-Django==1.9.4
+dj-database-url==0.4.0
+Django==1.9.5
 django-datetime-widget==0.9.3
-gunicorn==19.1.0
-PasteDeploy==1.5.2
+gunicorn==19.4.5
 psycopg2==2.6.1
-python-dateutil==2.5.0
-pytz==2016.1
+python-dateutil==2.5.2
+pytz==2016.3
 six==1.10.0
+whitenoise==3.0
