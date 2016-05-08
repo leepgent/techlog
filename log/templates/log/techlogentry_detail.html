@@ -3,7 +3,9 @@
 {% load staticfiles %}
 
 {% block header %}
-    {{ form.media }}
+{# Django doesn't correctly prepend the static url if, say, S3 storage is in operation so form.medis doesn't work. Do it manually. #}
+    <link href="{% static 'css/datetimepicker.css' %}" type="text/css" media="all" rel="stylesheet">
+    <script type="text/javascript" src="{% static 'js/bootstrap-datetimepicker.js' %}"></script>
 {% endblock %}
 
 
