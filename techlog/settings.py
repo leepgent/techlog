@@ -33,6 +33,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
+    'storages',
+    's3utils',
     'registration',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -125,4 +127,10 @@ DEFAULT_FROM_EMAIL = 'support@techlog.aero'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+AWS_S3_FILE_OVERWRITE = False
+
+DEFAULT_FILE_STORAGE = 's3utils.s3utils.MediaRootS3BotoStorage'
+STATICFILES_STORAGE = 's3utils.s3utils.StaticRootS3BotoStorage'
