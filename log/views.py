@@ -7,6 +7,8 @@ from django.shortcuts import render, get_object_or_404
 
 from django.utils import timezone
 from django.core import serializers
+from django.utils.html import escape
+
 from aeroplanes.models import Aeroplane
 from group.models import GroupMemberProfile
 from .forms import TechLogEntryForm, InlineConsumablesReceiptFormSet
@@ -397,7 +399,8 @@ def log_entries_xml(request, aeroplane_reg, year=None, month=None):
 
         response.write('\t\t<consumables_receipts>\n')
         for receipt in entry.consumablesreceipt_set.all():
-            response.write('\t\t\t<receipt name="{}" url="{}" />\n'.format(receipt.image.name, receipt.image.url))
+            encoded_url = escape(receipt.image.url)
+            response.write('\t\t\t<receipt name="{}" url="{}" />\n'.format(receipt.image.name, encoded_url))
 
         response.write('\n\n</consumables_receipts>\n')
 
@@ -442,7 +445,8 @@ def log_entries_xml_v01(request, aeroplane_reg, year=None, month=None):
         response.write('\t\t<field type="BooleanField" name="check_a_completed">{}</field>\n'.format(entry.check_a_completed))
 
         if entry.consumablesreceipt_set.exists():
-            response.write('\t\t<field type="FileField" name="consumables_receipt_image">{}</field>\n'.format(entry.consumablesreceipt_set.first().image.url))
+            encoded_url = escape(entry.consumablesreceipt_set.first().image.url)
+            response.write('\t\t<field type="FileField" name="consumables_receipt_image">{}</field>\n'.format(encoded_url))
         else:
             response.write('\t\t<field type="FileField" name="consumables_receipt_image"/>\n')
         response.write('\t\t<field type="FloatField" name="fuel_rebate_price_per_litre">{}</field>\n'.format(entry.fuel_rebate_price_per_litre))
