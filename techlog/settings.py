@@ -117,11 +117,11 @@ LOGIN_URL = "/login/"
 MEDIA_ROOT = os.path.join(STATIC_ROOT, 'media')
 MEDIA_URL = '/static/media/'
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = '465'
-EMAIL_USE_SSL = True
-EMAIL_HOST_USER = 'lee@leegent.net'
-EMAIL_HOST_PASSWORD = '***REMOVED***'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = os.environ.get('SENDGRID_USERNAME')
+EMAIL_HOST_PASSWORD = os.environ.get('SENDGRID_PASSWORD')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
 EMAIL_SUBJECT_PREFIX = '[techlog.aero] '
 DEFAULT_FROM_EMAIL = 'support@techlog.aero'
 
