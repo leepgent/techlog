@@ -92,9 +92,23 @@ def log_entries(request, aeroplane_reg, year=None, month=None):
     return render(request, "log/techlogentry_list.html", context_dict)
 
 
+def _commanderise_user(user):
+    return _commanderise(user.first_name, user.last_name)
+
+
+def _commanderise(first_name, last_name):
+    return "{1}, {0}".format(first_name.capitalize()[0], last_name.capitalize())
+
+
 def _get_commander_choices(owning_group):
-    names = owning_group.user_set.all().values_list("last_name")
-    cmdrs = [(c[0].capitalize(), c[0].capitalize()) for c in names]
+    names = owning_group.user_set.filter(is_active=True).values_list("first_name", "last_name")
+
+    cmdrs = []
+
+    for n in names:
+        cmdr = _commanderise(n[0], n[1])
+        cmdrs.append((cmdr, cmdr))
+
     return cmdrs
 
 
@@ -121,7 +135,6 @@ def view_entry(request, aeroplane_reg, pk):
                 receipt_formset.instance = entry
                 receipt_formset.save()
 
-
             return HttpResponseRedirect(reverse("techlogentrylist", args=[aeroplane.registration]))
 
     return render(request, "log/techlogentry_detail.html", {"aeroplane": aeroplane, "form": form, "receipts_form": receipts_form, "entry": entry})
@@ -144,7 +157,7 @@ def add_flight(request, aeroplane_reg):
         form = TechLogEntryForm(initial={
             "departure_time": now,
             "arrival_time": now,
-            "commander": request.user.last_name,
+            "commander": _commanderise_user(request.user),
             "departure_location": last_entry.arrival_location,
             "fuel_uplift": 0,
             "oil_uplift": 0,
