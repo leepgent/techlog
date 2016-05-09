@@ -25,9 +25,9 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 SECRET_KEY = '2x%^71%yk37s0+cp$rv2phff%dap#-x70wf)d%l%0d6ykwy3t^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = (os.environ.get('TECHLOG_DEBUG', 'False') == 'True')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ.get('TECHLOG_ALLOWED_HOSTS', '').split()
 
 
 # Application definition
