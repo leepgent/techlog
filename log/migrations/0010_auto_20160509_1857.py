@@ -20,7 +20,7 @@ def _go(apps, schema):
     for tle in TechLogEntry.objects.all():
         cmdr = tle.commander
 
-        u = Users.objects.get(last_name=cmdr)
+        u = Users.objects.filter(last_name=cmdr)[0]
         new_cmdr = _commanderise_user(u)
 
         tle.commander = new_cmdr
