@@ -3,9 +3,9 @@ dj-database-url==0.4.1
 Django==1.9.6
 django-datetime-widget==0.9.3
 django-storages==1.4.1
-gunicorn==19.4.5
+gunicorn==19.5.0
 psycopg2==2.6.1
 python-dateutil==2.5.3
 pytz==2016.4
 six==1.10.0
-whitenoise==3.0
+whitenoise==3.1
