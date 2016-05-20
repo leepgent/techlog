@@ -50,28 +50,5 @@
   </div>
 </div>
 
-     <div class="panel panel-default">
-  <div class="panel-heading">Group Roles</div>
-  <div class="panel-body">
-  <table class="table">
-      <thead>
-      <tr>
-          <th>Name</th>
-          <th>Role</th>
-          <th>Contact Details</th>
-      </tr>
-      </thead>
-      <tbody>
-      {% for role in profile.roles.all %}
-      <tr>
-          <td>{{ role.name }}</td>
-          <td>{{ role.role }}</td>
-          <td>{{ role.contact_info }}</td>
-      </tr>
-      {% endfor %}
-      </tbody>
-  </table>
 
-  </div>
-</div>
 {% endblock %}
