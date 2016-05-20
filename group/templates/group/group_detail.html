@@ -32,46 +32,16 @@
   <div class="panel-heading">Group Members</div>
   <div class="panel-body">
     <ul class="list-group">
-        {% for user in profile.group.user_set.all %}
-            <li class="list-group-item">{{ user.get_full_name }} ({{ user.get_username }})</li>
+        {% for user_profile in profile.groupmemberprofile_set.all %}
+            <li class="list-group-item">
+                {{ user_profile.member.get_full_name }} ({{ user_profile.member.get_username }})
+            {% if user_profile.administrator %}
+                [techlog.aero group administrator]
+            {% endif %}
+            </li>
         {% endfor %}
         </ul>
   </div>
 </div>
-
-    <div class="panel panel-default">
-  <div class="panel-heading">Techlog.aero Group Administrators</div>
-  <div class="panel-body">
-    <ul class="list-group">
-        {% for user in profile.administrators.all %}
-            <li class="list-group-item">{{ user.get_full_name }} ({{ user.get_username }})</li>
-        {% endfor %}
-        </ul>
-  </div>
-</div>
-
-     <div class="panel panel-default">
-  <div class="panel-heading">Group Roles</div>
-  <div class="panel-body">
-  <table class="table">
-      <thead>
-      <tr>
-          <th>Name</th>
-          <th>Role</th>
-          <th>Contact Details</th>
-      </tr>
-      </thead>
-      <tbody>
-      {% for role in profile.roles.all %}
-      <tr>
-          <td>{{ role.name }}</td>
-          <td>{{ role.role }}</td>
-          <td>{{ role.contact_info }}</td>
-      </tr>
-      {% endfor %}
-      </tbody>
-  </table>
-
-  </div>
-</div>
+    
 {% endblock %}

@@ -39,7 +39,7 @@ AWS_MEDIA_BUCKET_NAME = os.environ.get('AWS_MEDIA_BUCKET_NAME')
 AWS_S3_FILE_OVERWRITE = False
 DEFAULT_FILE_STORAGE = 'techlog.s3utils.MediaRootS3BotoStorage'
 
-if os.environ.get('TECHLOG_STATIC_USE_S3', 'False' == 'True'):
+if os.environ.get('TECHLOG_STATIC_USE_S3', 'False') == 'True':
 
     AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
     STATICFILES_STORAGE = 'techlog.s3utils.StaticRootS3BotoStorage'
@@ -146,4 +146,3 @@ EMAIL_SUBJECT_PREFIX = '[techlog.aero] '
 DEFAULT_FROM_EMAIL = 'support@techlog.aero'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
