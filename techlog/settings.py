@@ -29,10 +29,31 @@ DEBUG = (os.environ.get('TECHLOG_DEBUG', 'False') == 'True')
 
 ALLOWED_HOSTS = os.environ.get('TECHLOG_ALLOWED_HOSTS', '').split()
 
+INSTALLED_APPS = []
+MIDDLEWARE_CLASSES = []
 
-# Application definition
 
-INSTALLED_APPS = (
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
+AWS_MEDIA_BUCKET_NAME = os.environ.get('AWS_MEDIA_BUCKET_NAME')
+AWS_S3_FILE_OVERWRITE = False
+DEFAULT_FILE_STORAGE = 'techlog.s3utils.MediaRootS3BotoStorage'
+
+if os.environ.get('TECHLOG_STATIC_USE_S3', 'False' == 'True'):
+
+    AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
+    STATICFILES_STORAGE = 'techlog.s3utils.StaticRootS3BotoStorage'
+
+else:
+    INSTALLED_APPS.extend([
+        'whitenoise.runserver_nostatic',
+    ])
+    MIDDLEWARE_CLASSES.extend([
+        'whitenoise.middleware.WhiteNoiseMiddleware'
+    ])
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+INSTALLED_APPS.extend([
     'storages',
     'registration',
     'django.contrib.admin',
@@ -46,9 +67,9 @@ INSTALLED_APPS = (
     'aeroplanes',
     'log',
     'dashboard',
-)
+])
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES.extend([
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,7 +78,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-)
+])
 
 ROOT_URLCONF = 'techlog.urls'
 
@@ -126,11 +147,3 @@ DEFAULT_FROM_EMAIL = 'support@techlog.aero'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
-AWS_S3_FILE_OVERWRITE = False
-AWS_MEDIA_BUCKET_NAME = os.environ.get('AWS_MEDIA_BUCKET_NAME')
-
-DEFAULT_FILE_STORAGE = 'techlog.s3utils.MediaRootS3BotoStorage'
-STATICFILES_STORAGE = 'techlog.s3utils.StaticRootS3BotoStorage'
