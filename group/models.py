@@ -39,7 +39,6 @@ class GroupProfile(models.Model):
 class GroupMemberProfile(models.Model):
     group = models.ForeignKey(GroupProfile)
     member = models.ForeignKey(settings.AUTH_USER_MODEL)
-    role = models.CharField(max_length=200, null=True)
     administrator = models.BooleanField()
 
     current_rate_includes_fuel = models.BooleanField()
