@@ -34,7 +34,6 @@ ALLOWED_HOSTS = os.environ.get('TECHLOG_ALLOWED_HOSTS', '').split()
 
 INSTALLED_APPS = (
     'storages',
-    's3utils',
     'registration',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -133,5 +132,5 @@ AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_FILE_OVERWRITE = False
 AWS_MEDIA_BUCKET_NAME = os.environ.get('AWS_MEDIA_BUCKET_NAME')
 
-DEFAULT_FILE_STORAGE = 's3utils.s3utils.MediaRootS3BotoStorage'
-STATICFILES_STORAGE = 's3utils.s3utils.StaticRootS3BotoStorage'
+DEFAULT_FILE_STORAGE = 'techlog.s3utils.MediaRootS3BotoStorage'
+STATICFILES_STORAGE = 'techlog.s3utils.StaticRootS3BotoStorage'
