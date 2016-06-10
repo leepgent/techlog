@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.forms import inlineformset_factory, modelform_factory
 from django.http import HttpResponseRedirect, HttpResponseBadRequest
 from django.shortcuts import render, get_object_or_404
 from .models import GroupProfile, GroupMemberProfile
@@ -7,8 +8,51 @@ from .models import GroupProfile, GroupMemberProfile
 
 @login_required
 def group(request, pk):
-    groupprofile = get_object_or_404(GroupProfile, id=pk)
-    return render(request, "group/group_detail.html", {"profile": groupprofile})
+    group_profile = get_object_or_404(GroupProfile, id=pk)
+    group = group_profile.group
+    group_admins = group_profile.groupmemberprofile_set.filter(administrator=True)
+
+    context = {
+        'profile': group_profile,
+        'admins': group_admins,
+    }
+    return render(request, "group/group_detail.html", context)
+
+
+@login_required
+def edit_group(request, pk):
+    group_profile = get_object_or_404(GroupProfile, id=pk)
+    group = group_profile.group
+    group_admins = group_profile.groupmemberprofile_set.filter(administrator=True)
+    GPMFormSet = inlineformset_factory(GroupProfile, GroupMemberProfile, fields=[
+        'member',
+        'administrator',
+        'current_rate_includes_fuel',
+        'current_rate_includes_oil',
+        'current_charge_regime',
+        'current_cost_per_unit',
+    ], extra=0)
+    GPForm = modelform_factory(GroupProfile, fields=[
+        'group',
+        'current_fuel_rebate_price_per_litre',
+        'current_oil_rebate_price_per_litre',
+        'secret_key',
+        'default_rate_includes_fuel',
+        'default_rate_includes_oil',
+        'default_charge_regime',
+        'default_cost_per_unit',
+    ])
+    form = GPForm(instance=group_profile)
+
+    gpmfs = GPMFormSet(instance=group_profile)
+    context = {
+        'profile': group_profile,
+        'admins': group_admins,
+        'form': form,
+        'gpmfs': gpmfs
+
+    }
+    return render(request, 'group/group_edit.html', context)
 
 
 @login_required

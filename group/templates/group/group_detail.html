@@ -4,44 +4,48 @@
 
 {% block content %}
 
-           <div class="page-header">
-  <h2>{{ profile.group.name }}</h2>
-</div>
-
-    <div class="panel panel-default">
-  <div class="panel-heading">Secret key - give this to people to allow them to join the {{ profile.group.name }} group</div>
-  <div class="panel-body">
-
-      <p><a href="{% url 'joingroup' profile.secret_key %}" title="Join {{ profile.group.name }}">{{ request.META.HTTP_HOST }}{% url 'joingroup' profile.secret_key %}</a></p>
-
-    </div>
+    <div class="page-header">
+        <h2>{{ profile.group.name }}</h2>
     </div>
 
     <div class="panel panel-default">
-  <div class="panel-heading">Group Aeroplanes</div>
-  <div class="panel-body">
-    <ul class="list-group">
-        {% for aeroplane in profile.group.aeroplane_set.all %}
-            <li class="list-group-item"><a href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane }}</a></li>
-        {% endfor %}
-        </ul>
-  </div>
-</div>
+        <div class="panel-heading">Secret key - give this to people to allow them to join the {{ profile.group.name }}
+            group
+        </div>
+        <div class="panel-body">
+
+            <p><a href="{% url 'joingroup' profile.secret_key %}" title="Join {{ profile.group.name }}">
+                {{ request.META.HTTP_HOST }}{% url 'joingroup' profile.secret_key %}</a></p>
+
+        </div>
+    </div>
 
     <div class="panel panel-default">
-  <div class="panel-heading">Group Members</div>
-  <div class="panel-body">
-    <ul class="list-group">
-        {% for user_profile in profile.groupmemberprofile_set.all %}
-            <li class="list-group-item">
-                {{ user_profile.member.get_full_name }} ({{ user_profile.member.get_username }})
-            {% if user_profile.administrator %}
-                [techlog.aero group administrator]
-            {% endif %}
-            </li>
-        {% endfor %}
-        </ul>
-  </div>
-</div>
-    
+        <div class="panel-heading">Group Aeroplanes</div>
+        <div class="panel-body">
+            <ul class="list-group">
+                {% for aeroplane in profile.group.aeroplane_set.all %}
+                    <li class="list-group-item"><a
+                            href="{% url 'aeroplane' aeroplane.registration %}">{{ aeroplane }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Group Members</div>
+        <div class="panel-body">
+            <ul class="list-group">
+                {% for user_profile in profile.groupmemberprofile_set.all %}
+                    <li class="list-group-item">
+                        {{ user_profile.member.get_full_name }} ({{ user_profile.member.get_username }})
+                        {% if user_profile.administrator %}
+                            [techlog.aero group administrator]
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
 {% endblock %}
