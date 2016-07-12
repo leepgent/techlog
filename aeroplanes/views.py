@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
@@ -8,6 +10,7 @@ from .models import Aeroplane
 from .forms import AeroplaneForm
 from io import StringIO
 
+
 @login_required
 def aeroplane(request, aeroplane_reg):
     ac = get_object_or_404(Aeroplane, registration=aeroplane_reg)
@@ -15,9 +18,10 @@ def aeroplane(request, aeroplane_reg):
     return render(request, "aeroplanes/aeroplane.html", {"aeroplane": ac, "last_check": ac.get_last_check(),
                                                          "form": form})
 
+
 def aeroplane_xml_v1(request, aeroplane_reg):
     ac = get_object_or_404(Aeroplane, registration=aeroplane_reg)
-    stream = StringIO.StringIO()
+    stream = StringIO()
     
     stream.write("<?xml version='1.0' encoding='UTF-8' ?>")
     stream.write("<aeroplane regstration='{}'>".format(ac.registration))
