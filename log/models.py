@@ -20,10 +20,10 @@ class TechLogEntry(models.Model):
     fuel_uplift = models.FloatField()
     oil_uplift = models.FloatField()
     defects = models.TextField(max_length=200)
-    check_a_completed = models.BooleanField()
+    check_a_completed = models.BooleanField(verbose_name='Check \'A\' Completed')
 
-    fuel_rebate_price_per_litre = models.FloatField()
-    oil_rebate_price_per_litre = models.FloatField()
+    fuel_rebate_price_per_litre = models.FloatField(verbose_name='Current price of 100LL at EGBN, inc VAT')
+    oil_rebate_price_per_litre = models.FloatField(verbose_name='Current price of oil at EGBN, inc VAT')
     rate_includes_fuel = models.BooleanField()
     rate_includes_oil = models.BooleanField()
     charge_regime = models.CharField(max_length=20, choices=GroupProfile.CHARGE_REGIME_CHOICES)

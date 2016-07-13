@@ -21,9 +21,13 @@ class TechLogEntryForm(ModelForm):
             "fuel_uplift",
             "oil_uplift",
             "defects",
-            "check_a_completed"
+            "check_a_completed",
+            "fuel_rebate_price_per_litre",
+            "oil_rebate_price_per_litre"
         ]
         widgets = {
+            "fuel_rebate_price_per_litre": widgets.NumberInput(attrs={'class': 'form-control'}),
+            "oil_rebate_price_per_litre": widgets.NumberInput(attrs={'class': 'form-control'}),
             "fuel_uplift": widgets.NumberInput(attrs={'class': 'form-control'}),
             "oil_uplift": widgets.NumberInput(attrs={'class': 'form-control'}),
             "departure_tacho": widgets.NumberInput(attrs={'class': 'form-control'}),

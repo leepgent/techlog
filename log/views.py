@@ -162,7 +162,10 @@ def add_flight(request, aeroplane_reg):
             "fuel_uplift": 0,
             "oil_uplift": 0,
             "defects": "Nil",
-            "departure_tacho": "{0:.2f}".format(last_entry.arrival_tacho)}
+            "departure_tacho": "{0:.2f}".format(last_entry.arrival_tacho),
+            "fuel_rebate_price_per_litre": group_profile.current_fuel_rebate_price_per_litre,
+            "oil_rebate_price_per_litre": group_profile.current_oil_rebate_price_per_litre
+        }
         )
 
         form.fields["commander"].choices = _get_commander_choices(group)
@@ -183,8 +186,6 @@ def add_flight(request, aeroplane_reg):
         if form.is_valid():
             entry = form.save(commit=False)
             entry.aeroplane = aeroplane
-            entry.fuel_rebate_price_per_litre = group_profile.current_fuel_rebate_price_per_litre
-            entry.oil_rebate_price_per_litre = group_profile.current_oil_rebate_price_per_litre
             entry.rate_includes_fuel = memberprofile.current_rate_includes_fuel
             entry.rate_includes_oil = memberprofile.current_rate_includes_oil
             entry.charge_regime = memberprofile.current_charge_regime
