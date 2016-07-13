@@ -7,6 +7,8 @@ from group.models import GroupProfile
 
 
 class TechLogEntry(models.Model):
+    class Meta:
+        verbose_name_plural = 'Tech Log Entries'
     aeroplane = models.ForeignKey(Aeroplane)
     commander = models.TextField(max_length=100)
     departure_location = models.TextField(max_length=100)
@@ -28,7 +30,13 @@ class TechLogEntry(models.Model):
     cost_per_unit = models.FloatField()
 
     def __str__(self):
-        return "Flight in {0} by {1} at {2}".format(self.aeroplane, self.commander, self.departure_time)
+        return "Flight in {} by {} at {} ({} to {})".format(
+            self.aeroplane,
+            self.commander,
+            self.departure_time,
+            self.departure_location,
+            self.arrival_location
+        )
 
     # engine duration, flight duration and airborne times dynamically calculated
 
@@ -113,3 +121,10 @@ class TechLogEntry(models.Model):
 class ConsumablesReceipt(models.Model):
     image = models.FileField()
     log_entry = models.ForeignKey("TechLogEntry")
+
+    def __str__(self):
+        return "Receipt for flight in {} by {} at {} ({} to {})".format(
+            self.log_entry.aeroplane, self.log_entry.commander, self.log_entry.departure_time,
+            self.log_entry.departure_location,
+            self.log_entry.arrival_location
+        )
