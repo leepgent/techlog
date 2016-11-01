@@ -4,7 +4,7 @@
 
 {% block content %}
 
-        <h3>Full Statement for Capt {{ member.get_full_name }}</h3>
+        <h3>Full Statement for Capt {{ member.get_full_name }}  <a href="{% url 'group_statement_export' aeroplane.registration member.pk %}" role="button" class="btn-default btn"><span class="glyphicon glyphicon-save-file"></span></a></h3>
                 <div class="table-responsive">
                     <table class="table table-hover table-condensed">
                         <thead>

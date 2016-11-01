@@ -20,4 +20,5 @@ urlpatterns = [
     url(r'^delete/(?P<pk>\d+)/$', views.delete_logentry, name="delete_logentry"),
     url(r'^members/$', views.group_member_list, name="group_member_list"),
     url(r'^members/(?P<member_id>\d+)/statement/$', views.group_member_statement, name="group_member_statement"),
+    url(r'^members/(?P<member_id>\d+)/statement/export/$', views.group_member_statement_export, name="group_statement_export"),
 ]
