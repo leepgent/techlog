@@ -1,4 +1,6 @@
 from __future__ import unicode_literals
+
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.db.models import F, Value, Sum, Count, Q
@@ -476,6 +478,7 @@ def log_entries_xml_v01(request, aeroplane_reg, year=None, month=None):
 
     return response
 
+
 def log_entries_json(request, aeroplane_reg, year=None, month=None):
     now = timezone.now()
     if month is None:
@@ -532,3 +535,46 @@ def _log_entries_technical(request, template, aeroplane_reg, year=None, month=No
     context_dict.update(date_link_dict)
 
     return render(request, template, context_dict)
+
+
+@login_required
+def group_member_list(request, aeroplane_reg):
+    aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+    context = {
+        'aeroplane': aeroplane
+    }
+    template = 'log/memberlist.html'
+    return render(request, template, context)
+
+
+@login_required
+def group_member_statement(request, aeroplane_reg, member_id):
+    aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+    member = get_user_model().objects.get(pk=member_id)
+    entries = aeroplane.techlogentry_set.filter(commander=_commanderise_user(member)).order_by('departure_time')  # WARNING WARNING WARNING LOOSE ASSOCIATION
+    context = {
+        'aeroplane': aeroplane,
+        'member': member,
+        'entries': entries
+    }
+
+    template = 'log/member_statement.html'
+    return render(request, template, context)
+
+
+@login_required
+def group_member_statement_export(request, aeroplane_reg, member_id):
+    aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+    member = get_user_model().objects.get(pk=member_id)
+    entries = aeroplane.techlogentry_set.filter(commander=_commanderise_user(member)).order_by('departure_time')  # WARNING WARNING WARNING LOOSE ASSOCIATION
+    context = {
+        'aeroplane': aeroplane,
+        'member': member,
+        'entries': entries
+    }
+
+    template = 'log/member_statement.csv'
+    response = render(request, template, context, content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename={}.csv'.format(member.last_name)
+    return response
+

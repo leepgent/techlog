@@ -1,0 +1,17 @@
+{% extends "global/root.html" %}
+{% load staticfiles %}
+
+{% block content %}
+    <div class="panel panel-default">
+        <div class="panel-heading">Group Member Full Statements</div>
+        <div class="panel-body">
+            <ul class="list-group">
+                {% for member in aeroplane.owning_group.user_set.all %}
+                    <a href="{% url 'group_member_statement' aeroplane.registration member.pk %}">
+                    <li class="list-group-item">{{ member.get_full_name }}</li>
+                    </a>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
