@@ -548,7 +548,7 @@ def group_member_list(request, aeroplane_reg):
 
 
 @login_required
-def group_member(request, aeroplane_reg, member_id):
+def group_member_statement(request, aeroplane_reg, member_id):
     aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
     member = get_user_model().objects.get(pk=member_id)
     entries = aeroplane.techlogentry_set.filter(commander=_commanderise_user(member))  # WARNING WARNING WARNING LOOSE ASSOCIATION

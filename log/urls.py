@@ -19,5 +19,5 @@ urlpatterns = [
     url(r'^(?P<pk>\d+)/$', views.view_entry, name="logentry"),
     url(r'^delete/(?P<pk>\d+)/$', views.delete_logentry, name="delete_logentry"),
     url(r'^members/$', views.group_member_list, name="group_member_list"),
-    url(r'^members/(?P<member_id>\d+)/$', views.group_member, name="group_member"),
+    url(r'^members/(?P<member_id>\d+)/statement/$', views.group_member_statement, name="group_member_statement"),
 ]

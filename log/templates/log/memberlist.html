@@ -7,7 +7,7 @@
         <div class="panel-body">
             <ul class="list-group">
                 {% for member in aeroplane.owning_group.user_set.all %}
-                    <a href="{% url 'group_member' aeroplane.registration member.pk %}">
+                    <a href="{% url 'group_member_statement' aeroplane.registration member.pk %}">
                     <li class="list-group-item">{{ member.get_full_name }}</li>
                     </a>
                 {% endfor %}
