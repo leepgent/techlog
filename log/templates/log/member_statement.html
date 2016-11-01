@@ -1,0 +1,92 @@
+{% extends "global/root.html" %}
+{% load decimaltime %}
+{% load staticfiles %}
+
+{% block content %}
+
+        <h3>Full Statement for Capt {{ member.get_full_name }}</h3>
+                <div class="table-responsive">
+                    <table class="table table-hover table-condensed">
+                        <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>From</th>
+                            <th>To</th>
+
+                            <th>Block Time (hh:mm)</th>
+                            <th>Tacho Time (hh.%hh)</th>
+
+                            <th>Fuel Uplift (L)</th>
+                            <th>Oil Uplift (L)</th>
+
+                            <th>Charge Rate (&pound;/unit)</th>
+                            <th>Flight Cost (&pound;)</th>
+                            <th>Fuel Rebate Rate (&pound;/L)</th>
+                            <th>Fuel Rebate (&pound;)</th>
+                            <th>Oil Rebate Rate (&pound;/L)</th>
+                            <th>Oil Rebate (&pound;)</th>
+
+                            <th>Net Cost (&pound;)</th>
+
+                            <th>Receipts</th>
+                            <th></th>
+
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        {% for entry in entries %}
+                            <tr>
+                                <td>{{ entry.departure_time|date:"SHORT_DATE_FORMAT" }}</td>
+                                <td>{{ entry.departure_location }}</td>
+                                <td>{{ entry.arrival_location }}</td>
+
+                                <td>{{ entry.flight_duration }}</td>
+                                <td>{{ entry.engine_duration|stringformat:".02f" }}</td>
+
+                                <td>{{ entry.fuel_uplift }}</td>
+                                <td>{{ entry.oil_uplift }}</td>
+
+                                <td>{{ entry.cost_per_unit|floatformat:2 }}</td>
+                                <td>{{ entry.gross_cost|floatformat:2 }}</td>
+                                <td>{{ entry.fuel_rebate_price_per_litre|floatformat:2 }}</td>
+                                <td>{{ entry.fuel_rebate|floatformat:2 }}</td>
+                                <td>{{ entry.oil_rebate_price_per_litre|floatformat:2 }}</td>
+                                <td>{{ entry.oil_rebate|floatformat:2 }}</td>
+                                <td>{{ entry.net_cost|floatformat:2 }}</td>
+                                <td>
+                                    {% for consumables_receipt_image in entry.consumablesreceipt_set.all %}
+                                        <a href="{{ consumables_receipt_image.image.url }}">Image</a>
+                                    {% endfor %}
+
+                                </td>
+                            <td class="hidden-print"><a class="btn btn-default btn-sm"
+                               href="{% url 'logentry' entry.aeroplane.registration entry.id %}"><span
+                                class="glyphicon glyphicon-edit"></span></a></td>
+
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td><strong>{{ summary.totals.block }}</strong></td>
+                            <td><strong>{{ summary.totals.tacho|stringformat:".02f" }}</strong></td>
+                            <td><strong>{{ summary.totals.fuel }}</strong></td>
+                            <td><strong>{{ summary.totals.oil }}</strong></td>
+                            <td></td>
+                            <td><strong>{{ summary.totals.gross|floatformat:2 }}</strong></td>
+                            <td></td>
+                            <td><strong>{{ summary.totals.fuel_rebate|floatformat:2 }}</strong></td>
+                            <td></td>
+                            <td><strong>{{ summary.totals.oil_rebate|floatformat:2 }}</strong></td>
+                            <td><strong>{{ summary.totals.net|floatformat:2 }}</strong></td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+{% endblock %}
