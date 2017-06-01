@@ -586,7 +586,7 @@ def dump_last_x_weeks(request, aeroplane_reg, weeks):
     delta = timezone.timedelta(weeks=weeks)
     then = now - delta
     aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
-    entries = aeroplane.techlogentry_set.filter(departure_time__gte=then)
+    entries = aeroplane.techlogentry_set.filter(departure_time__gte=then).order_by('departure_time')
 
     context = {
         'aeroplane': aeroplane,
