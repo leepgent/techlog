@@ -578,3 +578,21 @@ def group_member_statement_export(request, aeroplane_reg, member_id):
     response['Content-Disposition'] = 'attachment; filename={}.csv'.format(member.last_name)
     return response
 
+
+@login_required
+def dump_last_x_weeks(request, aeroplane_reg, weeks):
+    now = timezone.now()
+    weeks = int(weeks)
+    delta = timezone.timedelta(weeks=weeks)
+    then = now - delta
+    aeroplane = get_object_or_404(Aeroplane, registration=aeroplane_reg)
+    entries = aeroplane.techlogentry_set.filter(departure_time__gte=then)
+
+    context = {
+        'aeroplane': aeroplane,
+        'entries': entries
+    }
+    template = 'log/dump_weeks.csv'
+    response = render(request, template, context, content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename={}-{}-weeks.csv'.format(aeroplane_reg, weeks)
+    return response

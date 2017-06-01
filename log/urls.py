@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^members/$', views.group_member_list, name="group_member_list"),
     url(r'^members/(?P<member_id>\d+)/statement/$', views.group_member_statement, name="group_member_statement"),
     url(r'^members/(?P<member_id>\d+)/statement/export/$', views.group_member_statement_export, name="group_statement_export"),
+    url(r'^dump-weeks/(?P<weeks>\d+)/$', views.dump_last_x_weeks, name="dump_weeks"),
 ]
